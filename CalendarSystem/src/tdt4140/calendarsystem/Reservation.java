@@ -1,5 +1,15 @@
 package tdt4140.calendarsystem;
 
-public class Reservation {
+import java.util.Date;
 
+public class Reservation {
+	
+	private MeetingRoom room;
+	Date start;
+	Date end;
+	
+	public Reservation()
+	{
+		
+	}
 }

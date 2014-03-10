@@ -1,5 +1,7 @@
 package tdt4140.calendarsystem;
 
+import java.util.ArrayList;
+
 public class Manager {
 
 	public Manager()
@@ -17,12 +19,12 @@ public class Manager {
 		return "";
 	}
 	
-	public String parseToXML()
+	public String parseToXML(ArrayList<Object> objects)
 	{
 		return "";
 	}
 	
-	public void parseFromXML()
+	public void parseFromXML(String XMLString)
 	{
 		
 	}
