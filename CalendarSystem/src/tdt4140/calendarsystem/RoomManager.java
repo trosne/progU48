@@ -61,6 +61,9 @@ public class RoomManager extends Manager {
 		for (int i = 0; i < bookings.size(); i++){
 			if (room.isEqual(bookings.get(i).getRoom())){
 				if (start.compareTo(bookings.get(i).getEnd()) >= 0 || end.compareTo(bookings.get(i).getStart()) <= 0){
+					return true;
+				}
+				else{
 					return false;
 				}
 			}
