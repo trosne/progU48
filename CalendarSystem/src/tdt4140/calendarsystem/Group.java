@@ -11,4 +11,30 @@ public class Group {
 	{
 		
 	}
+	
+	public boolean addUserToGroup(User u)
+	{
+		for(int i=0; i<users.size(); i++)
+		{
+			if(users.get(i).isEqual(u))
+				return false;
+		}
+		
+		users.add(u);
+		return true;
+	}
+	
+	public boolean removeUserFromGroup(User u)
+	{
+		for(int i=0; i<users.size(); i++)
+		{
+			if(users.get(i).isEqual(u))
+			{
+				users.remove(i);
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }
