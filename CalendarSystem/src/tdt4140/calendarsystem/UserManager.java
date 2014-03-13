@@ -12,7 +12,6 @@ public class UserManager extends Manager {
 		
 	}
 	
-	
 	public boolean addUser(String name, String username, String pw, String email)
 	{
 		User temp = new User(name, username, pw, email);
