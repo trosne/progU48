@@ -43,6 +43,12 @@ public class RoomManager extends Manager {
 
 	public boolean reserveRoom(MeetingRoom room, Date start, Date end)
 	{
+		if (checkAvailability(room, start, end)){
+			int resID = bookings.get(bookings.size() - 1).getReservationID() + 1;
+			Reservation res = new Reservation(room, resID, start, end);
+			bookings.add(res);
+			return true;
+		}
 		return false;
 	}
 	
@@ -51,7 +57,7 @@ public class RoomManager extends Manager {
 		bookings.remove(res);
 	}
 	
-	public ArrayList generateAvailableRooms(Date start, Date end)
+	public ArrayList<MeetingRoom> generateAvailableRooms(Date start, Date end)
 	{
 		ArrayList<MeetingRoom> availableRooms = new ArrayList<MeetingRoom>();
 		availableRooms.addAll(rooms);
