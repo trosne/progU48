@@ -5,6 +5,7 @@ import java.util.Date;
 public class Reservation {
 	
 	private MeetingRoom room;
+	private int reservationID;
 	Date start;
 	Date end;
 	
@@ -15,9 +16,10 @@ public class Reservation {
 		
 	}
 	
-	public Reservation(MeetingRoom room, Date start, Date end)
+	public Reservation(MeetingRoom room, int ID, Date start, Date end)
 	{
 		this.room = room;
+		this.reservationID = ID;
 		this.start = start;
 		this.end = end;
 	}
@@ -46,6 +48,20 @@ public class Reservation {
 	 */
 	public void setRoom(MeetingRoom room) {
 		this.room = room;
+	}
+	
+	/**
+	 * @return the reservationID
+	 */
+	public int getReservationID() {
+		return reservationID;
+	}
+
+	/**
+	 * @param reservationID the reservationID to set
+	 */
+	public void setReservationID(int ID) {
+		this.reservationID = ID;
 	}
 
 	/**
