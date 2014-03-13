@@ -5,9 +5,19 @@ public class MeetingRoom {
 	private String roomID;
 	private int cap; //capacity of room
 	
+	/**
+	 * Default constructor
+	 */
 	public MeetingRoom()
 	{
 		
+	}
+	
+	public boolean isEqual(MeetingRoom room) {
+		if (this.roomID.equals(room.getRoomID()) && this.cap == room.getCap())
+			return true;
+		
+		return false;
 	}
 
 	/**
