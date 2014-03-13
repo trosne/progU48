@@ -6,8 +6,8 @@ public class Reservation {
 	
 	private MeetingRoom room;
 	private int reservationID;
-	Date start;
-	Date end;
+	private Date start;
+	private Date end;
 	
 	/**
 	 * Default constructor
@@ -30,7 +30,7 @@ public class Reservation {
 	 * @return true if equal, false if not
 	 */
 	public boolean isEqual(Reservation res) {
-		if (this.room.isEqual(res.getRoom()) && this.start.compareTo(res.getStart()) == 0 && this.end.compareTo(res.getEnd()) == 0)
+		if (this.reservationID == res.getReservationID() && this.room.isEqual(res.getRoom()) && this.start.compareTo(res.getStart()) == 0 && this.end.compareTo(res.getEnd()) == 0)
 			return true;
 		
 		return false;
