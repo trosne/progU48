@@ -12,6 +12,26 @@ public class UserManager extends Manager {
 		
 	}
 	
+	
+	public boolean addUser(String name, String username, String pw, String email)
+	{
+		User temp = new User(name, username, pw, email);
+		
+		// check user uniqueness and that password is not empty
+		for(int i=0; i<users.size(); i++)
+		{
+			if(users.get(i).isEqual(temp))
+				return false;
+		}
+		if(pw == null)
+			return false;
+		
+		// add user to the list of users
+		users.add(temp);
+		
+		return true;
+	}
+	
 	@Override
 	public void parseFromXML(String XMLString)
 	{
