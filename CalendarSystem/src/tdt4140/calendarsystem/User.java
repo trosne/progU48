@@ -7,9 +7,24 @@ public class User {
 	private String password;
 	private String email;
 	
+	/**
+	 * Default constructor
+	 */
 	public User()
 	{
 		
+	}
+	
+	/**
+	 * Checks equality of two User objects
+	 * @param aUser The user to compare to
+	 * @return true if calling object is equal to parameter object
+	 */
+	public boolean isEqual(User aUser) {
+		if (this.username.equals(aUser.getUsername()))
+			return true;
+		
+		return false;
 	}
 
 	/**

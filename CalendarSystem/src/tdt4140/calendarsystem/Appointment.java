@@ -35,14 +35,29 @@ public class Appointment {
 		}
 	}
 	
+	/**
+	 * Adds a participant to the calendar appointment
+	 * @param x The participant to add
+	 */
 	public void addParticipant(Participant x)
 	{
-		
+		participants.add(x);
 	}
 	
-	public void removeParticipant(Participant x)
+	/**
+	 * Removes a participant from the calendar appointment
+	 * @param x The participant to remove
+	 * @return true if successful, false if participant does not exist
+	 */
+	public boolean removeParticipant(Participant x)
 	{
-		
+		for (int i = 0; i < participants.size(); i++) {
+			if (participants.get(i).getaUser().getUsername().equals(x.getaUser().getUsername())) {
+				participants.remove(i);
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public void editAppointment(Date start, Date end, String location, String description)
