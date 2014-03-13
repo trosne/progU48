@@ -48,12 +48,25 @@ public class RoomManager extends Manager {
 	
 	public void removeReservation(Reservation res)
 	{
-		
+		bookings.remove(res);
 	}
 	
 	public ArrayList generateAvailableRooms(Date start, Date end)
 	{
-		return new ArrayList<MeetingRoom>();
+		ArrayList<MeetingRoom> availableRooms = new ArrayList<MeetingRoom>();
+		availableRooms.addAll(rooms);
+		for (int i = 0; i < bookings.size(); i++){
+			if (checkAvailability(bookings.get(i).getRoom(), start, end) == false){
+				String bookedRoom = bookings.get(i).getRoom().getRoomID();
+				for (int j = 0; j < availableRooms.size(); j++){
+					if (availableRooms.get(j).getRoomID().equals(bookedRoom)){
+						availableRooms.remove(j);
+					}
+				}
+			}
+		}
+		
+		return availableRooms;
 	}
 	
 	private boolean checkAvailability(MeetingRoom room, Date start, Date end)
