@@ -63,11 +63,33 @@ public class CalendarManager extends Manager {
 				e.appendChild(d.createTextNode(appointment.getDescription()));
 				root.appendChild(e);
 
+				//participants:
 				ArrayList<Participant> participants = appointment.getParticipants();
 				for (int j = 0; j < participants.size(); j++)
 				{
 					e = d.createElement("participant");
-					e.appendChild(d.createTextNode(participants.get(j).));
+					e.appendChild(d.createTextNode(participants.get(j).getaUser().getUsername()));
+					root.appendChild(e);
+				}
+				//ext participants:
+				ArrayList<String> extParticipants = appointment.getExtParticipants();
+				for (int j = 0; j < extParticipants.size(); j++)
+				{
+					e = d.createElement("participant");
+					e.appendChild(d.createTextNode(extParticipants.get(i)));
+					root.appendChild(e);
+				}
+				//location:
+				if (appointment.getRes() == null)
+				{
+					e = d.createElement("location");
+					e.appendChild(d.createTextNode(appointment.getLocation()));
+					root.appendChild(e);
+				}
+				else
+				{
+					e = d.createElement("reservation");
+					e.appendChild(d.createTextNode(appointment.getRes().));
 					root.appendChild(e);
 				}
 			}
