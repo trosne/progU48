@@ -1,6 +1,7 @@
 package tdt4140.calendarsystem;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -86,12 +87,20 @@ public class CalendarManager extends Manager {
 					e.appendChild(d.createTextNode(appointment.getLocation()));
 					root.appendChild(e);
 				}
-				else
+				else//reservation
 				{
 					e = d.createElement("reservation");
-					e.appendChild(d.createTextNode(appointment.getRes().));
+					e.appendChild(d.createTextNode(Integer.toString(appointment.getRes().getReservationID())));
 					root.appendChild(e);
 				}
+				//start time
+				e = d.createElement("start_date");
+				e.appendChild(d.createTextNode(Long.toString(appointment.getStart().getTime())));
+				root.appendChild(e);
+				//end time
+				e = d.createElement("end_date");
+				e.appendChild(d.createTextNode(Long.toString(appointment.getEnd().getTime())));
+				root.appendChild(e);
 			}
 		} catch (Exception e)
 		{
