@@ -32,4 +32,16 @@ public class RoomManager extends Manager {
 	{
 		return false;
 	}
+
+	@Override
+	public String parseToXML() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void parseFromXML(String XMLString) {
+		// TODO Auto-generated method stub
+		
+	}
 }

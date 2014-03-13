@@ -11,7 +11,7 @@ public class CalendarManager extends Manager {
 		
 	}
 	
-	public ArrayList generateCalendar(User aUser)
+	public ArrayList<Appointment> generateCalendar(User aUser)
 	{
 		return new ArrayList<Appointment>();
 	}
@@ -40,8 +40,9 @@ public class CalendarManager extends Manager {
 	}
 	
 	@Override
-	public String parseToXML(ArrayList<Object> objects)
+	public String parseToXML()
 	{
+		
 		return "";
 	}
 	

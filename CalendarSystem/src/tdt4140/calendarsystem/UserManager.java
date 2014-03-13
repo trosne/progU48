@@ -13,14 +13,14 @@ public class UserManager extends Manager {
 	}
 	
 	@Override
-	public String parseToXML(ArrayList<Object> objects)
-	{
-		return "";
-	}
-	
-	@Override
 	public void parseFromXML(String XMLString)
 	{
 		
+	}
+
+	@Override
+	public String parseToXML() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
