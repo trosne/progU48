@@ -2,6 +2,12 @@ package tdt4140.calendarsystem;
 
 import java.util.ArrayList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 public class CalendarManager extends Manager {
 
 	private ArrayList<Appointment> appointments;
@@ -42,8 +48,34 @@ public class CalendarManager extends Manager {
 	@Override
 	public String parseToXML()
 	{
+		String result = "";
+		try {
+			DocumentBuilder f = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document d = f.newDocument();
 		
-		return "";
+			Element root = d.createElement("appointments");
+			Element e = null, ee = null;
+			for (int i = 0; i < appointments.size(); i++)
+			{
+				Appointment appointment = appointments.get(i);
+				
+				e = d.createElement("description");
+				e.appendChild(d.createTextNode(appointment.getDescription()));
+				root.appendChild(e);
+
+				ArrayList<Participant> participants = appointment.getParticipants();
+				for (int j = 0; j < participants.size(); j++)
+				{
+					e = d.createElement("participant");
+					e.appendChild(d.createTextNode(participants.get(j).));
+					root.appendChild(e);
+				}
+			}
+		} catch (Exception e)
+		{
+			
+		}
+			return "";
 	}
 	
 	@Override
