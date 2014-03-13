@@ -21,9 +21,18 @@ public class Appointment {
 		
 	}
 	
+	/**
+	 * Method sets the status of an internal participant
+	 * @param aUser User whos status should be changed
+	 * @param status Status to set
+	 */
 	public void setStatus(User aUser, String status)
 	{
-		
+		for (int i = 0; i < participants.size(); i++) {
+			if (participants.get(i).getaUser().getUsername() == aUser.getUsername()) {
+				participants.get(i).setStatus(status);
+			}
+		}
 	}
 	
 	public void addParticipant(Participant x)
