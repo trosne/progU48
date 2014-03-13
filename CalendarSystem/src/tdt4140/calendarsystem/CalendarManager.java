@@ -70,13 +70,14 @@ public class CalendarManager extends Manager {
 				{
 					e = d.createElement("participant");
 					e.appendChild(d.createTextNode(participants.get(j).getaUser().getUsername()));
+					e.appendChild(d.createTextNode(participants.get(j).getStatus()));
 					root.appendChild(e);
 				}
 				//ext participants:
 				ArrayList<String> extParticipants = appointment.getExtParticipants();
 				for (int j = 0; j < extParticipants.size(); j++)
 				{
-					e = d.createElement("participant");
+					e = d.createElement("extparticipant");
 					e.appendChild(d.createTextNode(extParticipants.get(i)));
 					root.appendChild(e);
 				}
