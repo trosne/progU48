@@ -23,7 +23,7 @@ public class User {
 	}
 	
 	/**
-	 * Checks equality of two User objects
+	 * Checks equality of two User objects. They are equal if usernames match
 	 * @param aUser The user to compare to
 	 * @return true if calling object is equal to parameter object
 	 */

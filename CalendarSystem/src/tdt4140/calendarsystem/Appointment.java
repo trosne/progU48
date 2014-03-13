@@ -22,6 +22,16 @@ public class Appointment {
 	}
 	
 	/**
+	 * Constructor setting the location, start and end time, and description. Used for external meetings
+	 */
+	public Appointment(String description, String location, Date start, Date end) {
+		this.description = description;
+		this.location = location;
+		this.start = start;
+		this.end = end;
+	}
+	
+	/**
 	 * Method sets the status of an internal participant
 	 * @param aUser User whos status should be changed
 	 * @param status Status to set
@@ -52,7 +62,7 @@ public class Appointment {
 	public boolean removeParticipant(Participant x)
 	{
 		for (int i = 0; i < participants.size(); i++) {
-			if (participants.get(i).getaUser().getUsername().equals(x.getaUser().getUsername())) {
+			if (participants.get(i).isEqual(x)) {
 				participants.remove(i);
 				return true;
 			}
@@ -60,9 +70,19 @@ public class Appointment {
 		return false;
 	}
 	
+	/**
+	 * Edits an appointment
+	 * @param start Start time
+	 * @param end End time
+	 * @param location New location
+	 * @param description New description
+	 */
 	public void editAppointment(Date start, Date end, String location, String description)
 	{
-		
+		this.start = start;
+		this.end = end;
+		this.location = location;
+		this.description = description;
 	}
 
 	/**

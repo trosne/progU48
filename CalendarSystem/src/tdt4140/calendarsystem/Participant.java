@@ -12,6 +12,18 @@ public class Participant {
 	{
 		
 	}
+	
+	/**
+	 * Checks equality of two Participant objects. They are equal if user and status match
+	 * @param x The participant to compare to
+	 * @return true if calling object is equal to parameter object
+	 */
+	public boolean isEqual(Participant x) {
+		if (this.aUser.isEqual(aUser) && this.status.equals(x.getStatus()))
+			return true;
+		
+		return false;
+	}
 
 	/**
 	 * @return the aUser
