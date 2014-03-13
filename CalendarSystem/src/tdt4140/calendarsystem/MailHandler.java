@@ -44,14 +44,14 @@ public class MailHandler {
         //recipient = "bakken.patrik@gmail.com";
 
         // Sender's email ID needs to be mentioned
-        sender = "avocado.prism@gmail.com";
+        sender = "tdt4140.48@gmail.com";
 
         // Assuming you are sending email from this host
         host = "smtp.gmail.com";
         
         // Username and password
-        username = "avocado.prism";
-        password = "1337sheep";
+        username = "tdt4140.48";
+        password = "felles2014";
     }
 
     public String getRecipient() {
