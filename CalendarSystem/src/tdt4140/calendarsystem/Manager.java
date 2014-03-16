@@ -32,9 +32,16 @@ public abstract class Manager {
 		return "";
 	}
 	
+	/**
+	 * Parses java objects to XML
+	 * @return XML string
+	 */
 	public abstract String parseToXML();
 	
-	
+	/**
+	 * Parses an XML string to java objects
+	 * @param XMLString The string to parse
+	 */
 	public abstract void parseFromXML(String XMLString);
 	
 }

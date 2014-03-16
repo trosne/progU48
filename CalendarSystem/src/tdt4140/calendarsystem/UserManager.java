@@ -61,6 +61,12 @@ public class UserManager extends Manager {
 
 	@Override
 	public void parseFromXML(String XMLString) {
+		
+	}
+
+	@Override
+	public String parseToXML() {
+		String result = "";
 		try {
 			DocumentBuilder f = DocumentBuilderFactory.newInstance()
 					.newDocumentBuilder();
@@ -120,17 +126,29 @@ public class UserManager extends Manager {
 				for (int j = 0; j < aGroup.getSubGroups().size(); j++) {
 					Group b = aGroup.getSubGroups().get(j);
 					
+					e = d.createElement("group");
+					ee.appendChild(e);
+					
+					Element sub = null;
+					sub = d.createElement("name");
+					sub.appendChild(d.createTextNode(b.getName()));
+					e.appendChild(sub);
+					
+					//users in subgroup
+					for (int k = 0; k < aGroup.getSubGroups().get(j).getUsers().size(); k++) {
+						User c = aGroup.getSubGroups().get(j).getUsers().get(k);
+						
+						sub = d.createElement("user");
+						sub.appendChild(d.createTextNode(c.getUsername()));
+						e.appendChild(sub);
+					}
 				}
 			}
 		} 
 		catch (Exception e) {
 
 		}
-	}
-
-	@Override
-	public String parseToXML() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return "";
 	}
 }

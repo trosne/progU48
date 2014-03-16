@@ -9,6 +9,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl;
+import com.sun.org.apache.xerces.internal.parsers.XMLDocumentParser;
+
 public class CalendarManager extends Manager {
 
 	private ArrayList<Appointment> appointments;
@@ -59,10 +62,12 @@ public class CalendarManager extends Manager {
 			for (int i = 0; i < appointments.size(); i++)
 			{
 				Appointment appointment = appointments.get(i);
+				ee = d.createElement("appointment");
+				root.appendChild(ee);
 				
 				e = d.createElement("description");
 				e.appendChild(d.createTextNode(appointment.getDescription()));
-				root.appendChild(e);
+				ee.appendChild(e);
 
 				//participants:
 				ArrayList<Participant> participants = appointment.getParticipants();
@@ -71,7 +76,7 @@ public class CalendarManager extends Manager {
 					e = d.createElement("participant");
 					e.appendChild(d.createTextNode(participants.get(j).getaUser().getUsername()));
 					e.appendChild(d.createTextNode(participants.get(j).getStatus()));
-					root.appendChild(e);
+					ee.appendChild(e);
 				}
 				//ext participants:
 				ArrayList<String> extParticipants = appointment.getExtParticipants();
@@ -79,35 +84,35 @@ public class CalendarManager extends Manager {
 				{
 					e = d.createElement("extparticipant");
 					e.appendChild(d.createTextNode(extParticipants.get(i)));
-					root.appendChild(e);
+					ee.appendChild(e);
 				}
 				//location:
 				if (appointment.getRes() == null)
 				{
 					e = d.createElement("location");
 					e.appendChild(d.createTextNode(appointment.getLocation()));
-					root.appendChild(e);
+					ee.appendChild(e);
 				}
 				else//reservation
 				{
 					e = d.createElement("reservation");
 					e.appendChild(d.createTextNode(Integer.toString(appointment.getRes().getReservationID())));
-					root.appendChild(e);
+					ee.appendChild(e);
 				}
 				//start time
 				e = d.createElement("start_date");
 				e.appendChild(d.createTextNode(Long.toString(appointment.getStart().getTime())));
-				root.appendChild(e);
+				ee.appendChild(e);
 				//end time
 				e = d.createElement("end_date");
 				e.appendChild(d.createTextNode(Long.toString(appointment.getEnd().getTime())));
-				root.appendChild(e);
+				ee.appendChild(e);
 			}
-		} catch (Exception e)
-		{
+		} 
+		catch (Exception e) {
 			
 		}
-			return "";
+		return "";
 	}
 	
 	@Override
