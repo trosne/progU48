@@ -13,12 +13,24 @@ public class UserManager extends Manager {
 	private ArrayList<User> users;
 	private ArrayList<Group> groups;
 
+    private static UserManager instance;
+
 	/**
 	 * Default constructor
 	 */
 	public UserManager() {
-
+        instance = this;
 	}
+
+    /**
+     * An easy way of getting the user manager singleton object
+     * @return the working instance of the user manager
+     */
+    public static UserManager getInstance()
+    {
+        return instance;
+    }
+
 
 	/**
 	 * Adds a user to the user list
@@ -58,6 +70,21 @@ public class UserManager extends Manager {
 
 		return false;
 	}
+
+    /**
+     * A function to get a user from the list based on username, used to add users to appointments and so on.
+     * @param username the username to find
+     * @return the user object matching the username, or null if not found.
+     */
+    public User getUser(String username)
+    {
+        for (int i = 0; i < users.size(); i++)
+            if (users.get(i).getUsername().equals(username))
+                return users.get(i);
+
+        return null;
+    }
+
 
 	@Override
 	public void parseFromXML(String XMLString) {

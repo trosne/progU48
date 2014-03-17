@@ -7,11 +7,19 @@ public class RoomManager extends Manager {
 
 	private ArrayList<MeetingRoom> rooms;
 	private ArrayList<Reservation> bookings;
+
+    private static RoomManager instance;
 	
 	public RoomManager()
 	{
-		
+		instance = this;
 	}
+
+    /**
+     * Convenience function to get the working instance of the room manager.
+     * @return the working instance of the manager
+     */
+    public static RoomManager getInstance() {return instance;}
 	
 	/**
 	 * @return the rooms
@@ -33,6 +41,19 @@ public class RoomManager extends Manager {
 	public ArrayList<Reservation> getBookings() {
 		return bookings;
 	}
+
+    /**
+     * Get the reservation with the given id
+     * @param id the id of the desired booking
+     * @return the booking with the matching id, or null if not found
+     */
+    public Reservation getReservation(int id)
+    {
+        for (int i = 0; i < bookings.size(); i++)
+            if (bookings.get(i).getReservationID() == id)
+                return bookings.get(i);
+        return null;
+    }
 
 	/**
 	 * @param bookings the bookings to set
