@@ -1,9 +1,0 @@
-\select@language {english}
-\contentsline {chapter}{\numberline {1}Time Usage}{2}
-\contentsline {section}{\numberline {1.1}}{2}
-\contentsline {subsection}{\numberline {1.1.1}}{2}
-\contentsline {subsection}{\numberline {1.1.2}}{2}
-\contentsline {subsection}{\numberline {1.1.3}}{2}
-\contentsline {subsection}{\numberline {1.1.4}}{2}
-\contentsline {chapter}{\numberline {2}Systemreport}{3}
-\contentsline {chapter}{\numberline {3}Project experience}{4}
