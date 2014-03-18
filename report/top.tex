@@ -1,0 +1,66 @@
+\documentclass[a4paper]{report}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Style packages %%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\setlength{\parindent}{0pt} 
+\setlength{\parskip}{2ex}
+\usepackage{a4wide}
+\reversemarginpar
+\usepackage{listings}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Layout packages %%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[]{graphicx}
+%\usepackage{fancyhdr}
+%\pagestyle{fancy}
+%\fancyhead{}
+%\fancyfoot{}
+%\fancyhead[RL,RO]{\nouppercase{\hfill\rightmark}\hspace{30pt}\bfseries{\thepage}}
+%\fancypagestyle{plain}{
+%\fancyhf{}\fancyfoot[C]{\bfseries{\thepage}}
+%}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Math packages %%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage{amsmath}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% References%%% %%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%\usepackage[colorlinks=true]{hyperref}
+%\usepackage[backend=biber]{biblatex}
+%\bibliography{refs}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Titlepage %%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\author{Eivind Christenson \\\\ Kaj Andreas Palm \\\\Leonid Zaikin\and Patrik Fridberg Bakken\\\\ Trond Einar Snekvik}
+\title{\MakeUppercase{\bf Report} \\ \Large{Programvareutvikling Spring 2014}}
+\date{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Document structure %%
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+
+%\begin{abstract}
+%\end{abstract}
+
+\tableofcontents
+\pagestyle{plain} %Normal chapter numbering.
+\chapter{Time Usage}
+\section{}
+\input{pt1.tex}
+\newpage
+\chapter{Systemreport}
+\input{pt2.tex}
+\chapter{Project experience}
+\input{pt3.tex}
+\end{document}

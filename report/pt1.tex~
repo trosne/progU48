@@ -1,0 +1,84 @@
+Denne delen tar for seg den nødvendig kamerateorien som var nødvendig å sette seg inn i for å utarbeide kravspesifikasjonen. Temaer som var relevante omfattet blant annet synsvinkel, zoom og lukkertid. 
+
+\subsection{Grunnleggende kamera teori}
+Synnsvinkelen til et kamera er hovedsakelig avhengig av dimensjonen til sensoren eller filmrullen og dennes avstand fra inngangslinsen. Formel \ref{formel:synsvinkel} er gyldig for sensorer der linsen gir ut et rettlinjet bilde. Bruker man en linse som gir kurvede linjer vil man ta i bruk mer komplekse formler.   
+\begin{eqnarray}
+	\alpha &=&  2\cdot \arctan \left( \frac{d}{2f} \right)
+	\label{formel:synsvinkel}
+\end{eqnarray}
+Fra formelen ser man at synsvinkelen er påvirket av to variable. Disse er størrelsen til sensoren \emph{d} og fokal lengde \emph{f}. Den siste er distansen mellom sensoren og den nærmeste linsen inne i kameraet. Størrelsen til sensoren vil være konstant, mens man kan endre fokal lengden for å få en smalere synsvinkel og dermed oppnå en forstørrelse. Det er denne metoden som blir når et kamera zoomer inn eller ut ved hjelp av optikk.   
+\subsection{Dekning av bilen}
+Et av kravene er at en bil skal utgjøre 100x100 piksler av bildet. Dette kommer av krav stilt av bildegjenkjenningen. Det vil si at for den gitte oppløsningen på 1260x960 må 10\% av pikslene bestå av bilen. Dette gjør det umulig å bruke et kamera uten en form for optisk zoom. Forstørrelses faktoren til denne, sett sammen med kvaliteten på kamera reguleringen, vil sette en makshøyde for flyet.
+
+For å ha et godt referanse punkt finner vi først ut hvor mange grader objektet utgjør set fra kameraet. 
+\begin{displaymath}
+	2\cdot \arctan \left( \frac{(\text{objektet i meter})/2}{\text{distanse i meter}} \right) = \alpha
+\end{displaymath}
+Når man vet hvor mange grader objektet tilsvarer og man vet synsvinkelen til kameraet kan man regne ut hvor mange prosent et objekt, av en gitt størrelse, vil oppta i det totale synsfeltet til kameraet.
+\begin{displaymath}
+	\text{(objektet i prosent)} =\frac{\alpha_{\text{objektet}}}{\alpha_{\text{kamera}}}\\
+\end{displaymath}
+Man kan så regne seg til hvor mange piksler dette tilsvarer for et kamera med gitt oppløsning.
+\begin{displaymath}
+	\text{(antall piksler)}  = (\text{totalt antall piksler}) \cdot (\text{objektet i prosent})\\
+\end{displaymath}
+
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=\linewidth]{simuleringer/synsvinkel.pdf}
+	\end{center}
+	\caption{Beregninger på synsvinkel sett mot høyde. Her med en horisontal synsvinkel på 50 grader.}
+	\label{fig:synsvinkel}
+\end{figure}
+
+\subsection{Krav til vekt}
+Flyet har en vekt på 250 til 500 gram. Det er gjort et anslag at på en maks operativ vekt på 3 kilogram. For oss betyr dette at vi må finne det minste kameraet som oppfyller kravene våre. Det kommer i tillegg ekstra vekt fra ''mounten'' som kameraet skal monteres i. Dette er et spesifikt krav som vi ikke har utarbeidet selv. 
+
+\subsection{Krav til lukkertid}
+I løpet av tiden det tar å ta et bilde vil flyet ha beveget seg en lengre distanse grunnet den høye farten. Vi ønsker å gjøre utregninger på hva dette tilsvarer i piksler og hva slags krav dette vil stille til lukkertiden. Det vil også være nødvendig å gjøre en subjektiv vurdering på bildekvaliteten gitt en mengde ''blur''. 
+\subsubsection{Utregninger}
+Basert på lukkertiden, synsfeltet og høyden kan man gjøre et estimat på hvor mye en piksel vil bevege seg i løpet av tiden det tar å ta et bilde. Basert på lukkertiden finner vi ut hvor langt flyet beveger seg i løpet av et bilde.
+\begin{displaymath}
+	\Delta \text{(Distanse)} = \frac{1000\cdot V_{\text{Drone}}}{3600} \cdot \frac{1}{\text{(Lukkertid)}}
+\end{displaymath}
+Siden synsfeltet avgjør hvor mye en piksel vil bevege seg regner vi ut endringen i vinkel.
+\begin{displaymath}
+	\Delta \text{(Vinkel)} = \arctan{\left(\frac{\Delta \text{(Distanse)}}{\text{(Høyde)}}\right)}
+\end{displaymath}
+Finner ut hvor mange piksler dette tilsvarer
+\begin{displaymath}
+	\Delta \text{Piksler} = \frac{\Delta \text{(Vinkel)}}{\text{(Synsvinkel)}} \cdot \text{(Oppløsning)}
+\end{displaymath}
+Denne algoritmen tar utgangspunkt i en stillestående piksel som står vinkelrett i forhold til flyets moment i tid 0. Man regner ut en worst case verdi basert på flyets fart og kameraets synsvinkel og lukkertid. Resultatet gir hvor mange pikslers forskyving man får på bildet. 
+\subsubsection{Vurderinger}
+Det finnes matematiske metoder for å finne ut hvor grensen går for et godt nok bilde til et bilde som er for dårlig. VQA (Video Quality Assessment) er et felles navn på disse metoder som har som formål og fastsette kvaliteten på et bilde utifra tekniske observasjoner. Dessverre er det veldig få VQA metoder som tar bevegelse i betraktning. De fleste metoder fokuserer bare på stillbilder og de som kan brukes på video er ofte adapterte fra metoder lagde for bruk på stillbilder. Vi ansåg det derfor nødvendig å gjøre en subjektiv vurdering av bilder utsatt for forskjellig mengde uskarphet. Dette gjør vi ved å bruke et bildebehandlingsverktøy, i dette tilfellet programmet Gimp. Slike programmer inneholder ulike filtre som kan brukes til å legge inn forskjellige typer forstyrelser i bildet. Vi bruker gaussian blur med ulik lengde horisontal piksel forskyvning for å generer bildene i figur \ref{fig:blurring}. Verdiene som er brukt kommer fra formlene vi utredet i forrige del og tar i betraktning worst case og best case lukkertid. 
+
+Det er åpenbart at med en pikselforskyvning på mer en ti piksler vil føre til et uskarpt bilde. Siden dette er film og ikke stillbilder vil uskarpheten oppfattes i mindre grad grunnet den høye frekvensen av nye bilder. Mange har sikkert set en action film eller lignende hvor kameraet beveger seg i høy hastiget. Bildet virker klart helt til man pauser filmen.
+
+\begin{figure}
+\begin{minipage}[]{0.32\linewidth}
+	\includegraphics[width=\linewidth]{blur/rally.jpg}	
+\end{minipage}
+\hfill
+\begin{minipage}[]{0.32\linewidth}
+	\includegraphics[width=\linewidth]{blur/rally_29px_blur_250.jpg}
+\end{minipage}
+\hfill
+\begin{minipage}[]{0.32\linewidth}
+	\includegraphics[width=\linewidth]{blur/rally_124px_blur_60.jpg}
+\end{minipage}
+\caption{Denne figuren viser det originale bildet til venstre. Et bilde med 29 pikslers forskyvning i midten og et bilde med 124 pikslers forskyvning til høyre.}
+\label{fig:blurring}
+\end{figure}
+\subsection{Nødvendig optikk}
+En av vurderingene som må gjøres er om det vil være nødvendig med en optisk zoom. Dette er sterkt avhengig av den ønskede høyden som dronen skal ha over bakken. 
+
+For å gi oss en peker på hva slags optikk som er nødvendig regner vi ut den nødvendige synsvinkelen gitt forskjellige høyder. Vår vurdering av nominel høyde vil være den endelige faktoren som avgjør om det er nødvendig med optisk zoom og eventuelt hvilken styrke denne må ha.
+\begin{figure}
+	\begin{center}
+		\includegraphics[width=\linewidth]{simuleringer/zoom.pdf}
+	\end{center}
+	\caption{Graf som viser sammenhengen mellom høyde og nødvendig synsvinkel}
+	\label{fig:zoom}
+\end{figure}
+
