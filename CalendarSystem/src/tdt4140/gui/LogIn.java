@@ -98,6 +98,13 @@ public class LogIn extends JFrame {
 	
 		btnEnter.setBounds(84, 128, 89, 23);
 		LoginPanel.add(btnEnter);
+<<<<<<< HEAD
+=======
+		
+		
+		
+
+>>>>>>> 2e6f745684c598872576f590f8baf7f7355901dc
 	}
 	
 	private ActionListener bl = new ActionListener() { 
