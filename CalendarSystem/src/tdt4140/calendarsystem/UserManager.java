@@ -3,6 +3,7 @@ package tdt4140.calendarsystem;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -15,6 +16,9 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class UserManager extends Manager {
 
@@ -101,6 +105,91 @@ public class UserManager extends Manager {
 	@Override
 	public void parseFromXML() {
 		
+		Document d;
+        try {
+            DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            d = db.parse(userFile);
+            NodeList groupsAndUsersList = d.getFirstChild().getChildNodes();
+
+            //parsing group or user
+            for (int i = 0; i < groupsAndUsersList.getLength(); i++)
+            {
+                Node subNode = groupsAndUsersList.item(i);
+                if (subNode.getNodeName().equals(TAG_USER))
+                {
+                    User user = new User();
+                    NamedNodeMap attributes = subNode.getAttributes();
+                    for (int j = 0; j < attributes.getLength(); j++)
+                    {
+                        if (attributes.item(j).getNodeName().equals(TAG_NAME))
+                            user.setName(attributes.item(j).getTextContent());
+                        else if (attributes.item(j).getNodeName().equals(TAG_USERNAME))
+                            user.setUsername(attributes.item(j).getNodeValue());
+                        else if (attributes.item(j).getNodeName().equals(TAG_PW))
+                            user.setPassword(attributes.item(j).getNodeValue());
+                        else if (attributes.item(j).getNodeName().equals(TAG_EMAIL))
+                            user.setEmail(attributes.item(j).getNodeValue());
+                    }
+                    users.add(user);
+                }
+                else if (subNode.getNodeName().equals(TAG_GROUP))
+                {
+                    Group group = new Group();
+                    NamedNodeMap attributes = subNode.getAttributes();
+                    for (int j = 0; j < attributes.getLength(); j++)
+                    {
+                        if (attributes.item(j).getNodeName().equals(TAG_NAME))
+                            group.setName(attributes.item(j).getNodeValue());
+                        
+                        NodeList subGroupList = subNode.getChildNodes();
+                        
+                        //parse users and subgroups
+                        for (int k = 0; k < subGroupList.getLength(); k++) {
+                        	Node sub2Node = subGroupList.item(k);
+                        	
+                        	if (sub2Node.getNodeName().equals(TAG_USER)) {
+                        		NamedNodeMap userAttr = sub2Node.getAttributes();
+                        		
+                        		for (int l = 0; l < userAttr.getLength(); l++) {
+                        			if (userAttr.item(l).getNodeName().equals(TAG_USERNAME))
+                        				group.addUserToGroup(getUser(userAttr.item(l).getNodeValue()));
+                        		}
+                        	}
+                        	else if (sub2Node.getNodeName().equals(TAG_GROUP)) {
+                        		Group subGroup = new Group();
+                        		NamedNodeMap subGroupAttr = sub2Node.getAttributes();
+                        		
+                        		for (int l = 0; l < subGroupAttr.getLength(); l++) {
+                        			if (subGroupAttr.item(l).getNodeName().equals(TAG_NAME))
+                        				subGroup.setName(subGroupAttr.item(l).getNodeValue());
+                        			
+                        			NodeList subGroupUsers = sub2Node.getChildNodes();
+                        			
+                        			//parse users in subgroup
+                        			for (int m = 0; m < subGroupUsers.getLength(); m++) {
+                        				Node sub3Node = subGroupUsers.item(m);
+                        				
+                        				if (sub3Node.getNodeName().equals(TAG_USER)) {
+                        					NamedNodeMap subUserAttr = sub3Node.getAttributes();
+                                    		
+                                    		for (int n = 0; n < subUserAttr.getLength(); n++) {
+                                    			if (subUserAttr.item(n).getNodeName().equals(TAG_USERNAME))
+                                    				subGroup.addUserToGroup(getUser(subUserAttr.item(n).getNodeValue()));
+                                    		}
+                        				}
+                        			}
+                        		}
+                        		group.addSubGroup(subGroup);
+                        	}
+                        }
+                        
+                    }
+                    groups.add(group);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 
 	@Override
