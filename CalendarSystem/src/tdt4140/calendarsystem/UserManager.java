@@ -156,6 +156,29 @@ public class UserManager extends Manager {
         return null;
     }
 
+    /**
+     * Get user based on name IRL
+     * @param name desired user
+     * @return the user matching the name or null.
+     */
+    public User getUserFromName(String name)
+    {
+        for (int i = 0; i < users.size(); i++)
+            if (users.get(i).getName().equals(name))
+                return users.get(i);
+
+        return null;
+    }
+
+    public Group getGroup(String name)
+    {
+        for (int i = 0; i < groups.size(); i++)
+            if (groups.get(i).getName().equals(name))
+                return groups.get(i);
+
+        return null;
+    }
+
 
 	@Override
 	public void parseFromXML() {

@@ -4,8 +4,7 @@ package tdt4140.gui;
 
 import tdt4140.calendarsystem.*;
 
-import java.awt.Container;
-import java.awt.EventQueue;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
@@ -31,7 +30,8 @@ public class ArrDialog{
 	//private JPanel contentPanel;
     static Container pane;
     private JTextField txtDescr;
-    private JTextField txtLocation;
+    private JTextField txtLocation, txtReservation;
+    private JButton btnBookARoom;
     private JComboBox<Integer> cmbDay, cmbYear;
     private JComboBox<String> cmbMonth;
     DefaultListModel mFromLst = new DefaultListModel();
@@ -40,6 +40,9 @@ public class ArrDialog{
     private JTextField txtExtPart;
     private JDialog d, dReserv;
     private JRadioButton rbNoAnswer, rbHideAppointment, rbAccepted;
+    private JRadioButton rbDur, rbTEnd;
+    private JFormattedTextField ftxtTStart, ftxtTEnd, ftxtDur;
+    private boolean endUseDuration;
 
     //private Date startDate, endDate;
     private Appointment appointment;
@@ -158,6 +161,10 @@ public class ArrDialog{
 		JLabel lblNewLabel_5 = new JLabel("Location");
 		lblNewLabel_5.setBounds(10, 136, 46, 14);
 		contentPanel.add(lblNewLabel_5);
+
+        JLabel lblNewLabel_6 = new JLabel("Reservation");
+        lblNewLabel_6.setBounds(10, 161, 66, 14);
+        contentPanel.add(lblNewLabel_6);
 		
 		//Create and place all editable/non-editable text fields on Content Panel 
 
@@ -168,27 +175,27 @@ public class ArrDialog{
 
 		
 	    //TIME TEXT FIELDS:
-	    final JFormattedTextField ftxtTStart = new JFormattedTextField(createFormatter("**:**","#####"));
+	    ftxtTStart = new JFormattedTextField(createFormatter("**:**","#####"));
 		ftxtTStart.setBounds(79, 58, 91, 20);
 		contentPanel.add(ftxtTStart);
         ftxtTStart.setValue(formatterToString(appointment.getStart().getHours(), appointment.getStart().getMinutes()));
 		
-		final JFormattedTextField ftxtTEnd = new JFormattedTextField(createFormatter("**:**","#####"));
+		ftxtTEnd = new JFormattedTextField(createFormatter("**:**","#####"));
 		ftxtTEnd.setBounds(79, 83, 91, 20);
 		contentPanel.add(ftxtTEnd);
         ftxtTEnd.setValue(formatterToString(appointment.getEnd().getHours(), appointment.getEnd().getMinutes()));
 		
-		final JFormattedTextField ftxtDur = new JFormattedTextField(createFormatter("**:**","#####"));
+		ftxtDur = new JFormattedTextField(createFormatter("**:**","#####"));
 		ftxtDur.setBounds(79, 108, 91, 20);
 		contentPanel.add(ftxtDur);
         ftxtDur.setEditable(false);
 
         //radiobuttons for duration and end field
-        final JRadioButton rbTEnd = new JRadioButton();
+        rbTEnd = new JRadioButton();
         rbTEnd.setBounds(190, 88, 91, 20);
         rbTEnd.setSelected(true);
 
-        final JRadioButton rbDur = new JRadioButton();
+        rbDur = new JRadioButton();
         rbDur.setBounds(190, 108, 91, 20);
 
         ButtonGroup timeGroup = new ButtonGroup();
@@ -202,6 +209,7 @@ public class ArrDialog{
             public void actionPerformed(ActionEvent actionEvent) {
                 if (rbTEnd.isSelected())
                 {
+                    endUseDuration = false;
                     ftxtTEnd.setEditable(true);
                     ftxtDur.setEditable(false);
                     ftxtDur.setValue("##:##");
@@ -215,6 +223,7 @@ public class ArrDialog{
             public void actionPerformed(ActionEvent actionEvent) {
                 if (rbDur.isSelected())
                 {
+                    endUseDuration = true;
                     ftxtTEnd.setEditable(false);
                     ftxtDur.setEditable(true);
                     ftxtTEnd.setValue("##:##");
@@ -226,8 +235,12 @@ public class ArrDialog{
 		txtLocation = new JTextField();
 		txtLocation.setBounds(79, 133, 91, 20);
 		contentPanel.add(txtLocation);
-		txtLocation.setColumns(10);
 
+
+        txtReservation = new JTextField();
+        txtReservation.setBounds(79, 158, 91, 20);
+        contentPanel.add(txtReservation);
+        txtReservation.setEditable(false);
 
         // Date picking:
 
@@ -262,7 +275,7 @@ public class ArrDialog{
 		
 		//Create and place separate content panel for JLists to add participants 
 		JPanel pnlParticipants = new JPanel(null);
-		pnlParticipants.setBounds(10, 176, 312, 302);
+		pnlParticipants.setBounds(10, 186, 312, 302);
 		pnlParticipants.setBorder(BorderFactory.createTitledBorder("Add participants"));
 		pnlParticipants.setBackground(contentPanel.getBackground());
 		contentPanel.add(pnlParticipants);
@@ -322,6 +335,8 @@ public class ArrDialog{
 	    			JList target = (JList)e.getSource();
 	    			DefaultListModel model = (DefaultListModel)target.getModel();
 	    			int index = target.getSelectedIndex();
+                    if (index != -1)
+                        model.remove(index);
 	    		}
 	    	}
 		});
@@ -332,7 +347,7 @@ public class ArrDialog{
 		pnlParticipants.add(sp2);
 		
 		//Create JList with external participants
-		JList lstExt = new JList(mExtLst);
+		final JList lstExt = new JList(mExtLst);
 		lstExt.setBounds(10, 233, 292, 58);
 		lstExt.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		lstExt.setPrototypeCellValue("email length ##");
@@ -342,13 +357,12 @@ public class ArrDialog{
 			
 		 	public void mousePressed( MouseEvent e){
 	    		if (e.getClickCount()==2){
-	    			
-	    		
 	    			JList target = (JList)e.getSource();
 	    			DefaultListModel model = (DefaultListModel)target.getModel();
 	    			int index = target.getSelectedIndex();
-	    			if (index !=-1)
-	    				model.remove(index);
+	    			if (index != -1)
+                        model.remove(index);
+
 	    		}
 	    	}
 		});
@@ -404,7 +418,68 @@ public class ArrDialog{
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                updateDateFromFields();
 
+                boolean notEnoughInfo = false;
+                //checks to find out if actually viable:
+                if (txtDescr.getText().isEmpty())
+                {
+                    txtDescr.setBackground(Color.YELLOW);
+                    notEnoughInfo = true;
+                }
+                if (txtLocation.getText().isEmpty() && appointment.getRes() == null)
+                {
+                    txtLocation.setBackground(Color.YELLOW);
+                    notEnoughInfo = true;
+                }
+                if (appointment.getStart().after(appointment.getEnd()))
+                {
+                    ftxtTEnd.setBackground(Color.YELLOW);
+                    if (endUseDuration)
+                        ftxtDur.setBackground(Color.YELLOW);
+                    else
+                        ftxtTEnd.setBackground(Color.YELLOW);
+                    notEnoughInfo = true;
+                }
+
+                if (notEnoughInfo)
+                    return;
+
+                //set fields:
+                appointment.setDescription(txtDescr.getText());
+                if (appointment.getRes() == null)
+                    appointment.setLocation(txtLocation.getText());
+
+                //external participants:
+                ArrayList<String> extPart = new ArrayList<>();
+                for (int i = 0; i < mExtLst.size(); i++)
+                    extPart.add((String) mExtLst.get(i));
+
+                appointment.setExtParticipants(extPart);
+
+
+                for (int i = 0; i < mToLst.size(); i++)
+                {
+                    String elem = (String) mToLst.get(i);
+                    if (elem.contains("(Group)"))
+                    {
+                        Group g = UserManager.getInstance().getGroup(elem.substring(0, elem.lastIndexOf(" ")));
+                        if (g != null)
+                        {
+                            ArrayList<User> usersInGroup = g.getAllUsers();
+                            for (int j = 0; j < usersInGroup.size(); j++)
+                                appointment.addParticipant(usersInGroup.get(i));
+                        }
+                    }
+                    else
+                    {
+                        User u = UserManager.getInstance().getUserFromName(elem);
+                        if (u == null)
+                            System.out.println("[ArrDialog]: Couldnt find user " + elem + " in user manager.");
+                        else
+                            appointment.addParticipant(u);
+                    }
+                }
 
                 CalendarManager.getInstance().makeAppointment(appointment);
 
@@ -413,25 +488,37 @@ public class ArrDialog{
         });
 		
 		//Create and add a button to open Room Booking dialog 
-		JButton btnBookARoom = new JButton("Book a room");
+        btnBookARoom = new JButton("Book a room");
 		btnBookARoom.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				EventQueue.invokeLater(new Runnable() {
-	    			public void run() {
-	    				try {
-	    					//System.out.println(CalendarPanel.currentMonth);
-	    					new BookRoom(d,true,"Room Booking", appointment, txtLocation);
+                if (btnBookARoom.getText().equals("Book a room"))
+                {
+                    EventQueue.invokeLater(new Runnable() {
+                        public void run() {
+                            try {
+                                //System.out.println(CalendarPanel.currentMonth);
+                                new BookRoom(d,true,"Room Booking", appointment, txtLocation, txtReservation, btnBookARoom);
 
-	    				} catch (Exception e) {
-	    					e.printStackTrace();
-	    				}
-	    			}
-	    		});
-				
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                }
+                else
+                {
+                    RoomManager.getInstance().removeReservation(appointment.getRes());
+                    appointment.setRes(null);
+                    btnBookARoom.setText("Book a room");
+                    txtReservation.setText("");
+                    txtLocation.setText("");
+                    txtLocation.setEditable(true);
+                }
 				
 			}
 		});
-		btnBookARoom.setBounds(180, 132, 111, 23);
+		btnBookARoom.setBounds(180, 157, 111, 23);
 		contentPanel.add(btnBookARoom);
 
         //status for response
@@ -468,7 +555,27 @@ public class ArrDialog{
     private void updateDateFromFields()
     {
         Date startDate = appointment.getStart();
-        Date endDate = appointment.getEnd();
         startDate.setDate(cmbDay.getSelectedIndex() + 1);
+        startDate.setMonth(cmbMonth.getSelectedIndex());
+        startDate.setYear(cmbYear.getSelectedIndex() + 114);
+        startDate.setHours(formatterGetHour((String) ftxtTStart.getValue()));
+        startDate.setMinutes(formatterGetMin((String) ftxtTStart.getValue()));
+
+
+        Date endDate = appointment.getEnd();
+        endDate.setDate(cmbDay.getSelectedIndex() + 1);
+        endDate.setMonth(cmbMonth.getSelectedIndex());
+        endDate.setYear(cmbYear.getSelectedIndex() + 114);
+        if (endUseDuration)
+        {
+            endDate.setHours(formatterGetHour((String) ftxtTStart.getValue()) + formatterGetHour((String) ftxtDur.getValue()));
+            endDate.setMinutes(formatterGetMin((String) ftxtTStart.getValue()) + formatterGetMin((String) ftxtDur.getValue()));
+        }
+        else
+        {
+            endDate.setHours(formatterGetHour((String) ftxtTEnd.getValue()));
+            endDate.setMinutes(formatterGetMin((String) ftxtTEnd.getValue()));
+        }
+
     }
 }

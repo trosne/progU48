@@ -55,6 +55,7 @@ public class Appointment {
 	 */
 	public void addParticipant(User x)
 	{
+        //first check to avoid duplicates
         if (getParticipant(x) == null)
         {
             Participant p = new Participant(x);
