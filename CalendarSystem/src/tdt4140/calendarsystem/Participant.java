@@ -4,14 +4,30 @@ public class Participant {
 
 	private User aUser;
 	private String status;
+
+    /**
+     * Default values for status. Should be used every time.
+     */
+    public static final String STATUS_NOT_RESPONDED = "Not responded", STATUS_ATTENDING = "Attending",
+            STATUS_DECLINED = "Declined", STATUS_CREATOR = "Creator";
 	
 	/**
 	 * Default constructor
 	 */
 	public Participant()
 	{
-		
+		status = STATUS_NOT_RESPONDED;
 	}
+
+    /**
+     * Constructor with immediate user add
+     * @param u user
+     */
+    public Participant(User u)
+    {
+        status = STATUS_NOT_RESPONDED;
+        aUser = u;
+    }
 	
 	/**
 	 * Checks equality of two Participant objects. They are equal if user and status match

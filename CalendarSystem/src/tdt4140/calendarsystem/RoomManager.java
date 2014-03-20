@@ -215,7 +215,7 @@ public class RoomManager extends Manager {
 
 	@Override
 	public void parseFromXML() {
-        
+
         Document d;
         try {
             DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -237,7 +237,9 @@ public class RoomManager extends Manager {
                         else if (attributes.item(j).getNodeName().equals(TAG_CAPACITY))
                             room.setCap(Integer.decode(attributes.item(j).getNodeValue()));
                     }
-                    rooms.add(room);
+                    //add if not a duplicate:
+                    if (getRoom(room.getRoomID()) == null)
+                        rooms.add(room);
                 }
                 else if (subNode.getNodeName().equals(TAG_RESERVATION))
                 {
