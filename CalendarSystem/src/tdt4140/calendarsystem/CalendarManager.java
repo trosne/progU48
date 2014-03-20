@@ -13,13 +13,10 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.StreamResult;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
 
 import com.sun.org.apache.xerces.internal.impl.XMLDocumentScannerImpl;
 import com.sun.org.apache.xerces.internal.parsers.XMLDocumentParser;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class CalendarManager extends Manager {
 
@@ -37,6 +34,7 @@ public class CalendarManager extends Manager {
 	public CalendarManager()
 	{
 		instance = this;
+        appointments = new ArrayList<Appointment>();
 	}
 
     public static CalendarManager getInstance()
@@ -77,69 +75,50 @@ public class CalendarManager extends Manager {
 	{
 		String result = "";
         Document d = null;
+        Element root;
 		try {
 			DocumentBuilder f = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			d = f.newDocument();
 		
-			Element root = d.createElement("appointments");
-			Element e = null, ee = null;
+			root = d.createElement("appointments");
+			Element e, ee;
 			for (int i = 0; i < appointments.size(); i++)
 			{
 				Appointment appointment = appointments.get(i);
-				ee = d.createElement(TAG_APPOINTMENT);
-				root.appendChild(ee);
+				e = d.createElement(TAG_APPOINTMENT);
+				root.appendChild(e);
 
-                //description
-				e = d.createElement(TAG_DESC);
-                e.setNodeValue(appointment.getDescription());
-				ee.appendChild(e);
+                e.setAttribute(TAG_DESC, appointment.getDescription());
+                e.setAttribute(TAG_START_DATE, Long.toString(appointment.getStart().getTime()));
+                e.setAttribute(TAG_END_DATE, Long.toString(appointment.getEnd().getTime()));
 
 				//participants:
 				ArrayList<Participant> participants = appointment.getParticipants();
 				for (int j = 0; j < participants.size(); j++)
 				{
-					e = d.createElement(TAG_PARTICIPANT);
+					ee = d.createElement(TAG_PARTICIPANT);
 
-                    Element name = d.createElement(TAG_PARTICIPANT_NAME);
-                    name.setNodeValue(participants.get(j).getaUser().getUsername());
-					e.appendChild(name);
-                    Element status = d.createElement(TAG_PARTICIPANT_STATUS);
-                    status.setNodeValue(participants.get(j).getStatus());
-					e.appendChild(status);
+                    ee.setAttribute(TAG_PARTICIPANT_NAME, participants.get(j).getaUser().getUsername());
+                    ee.setAttribute(TAG_PARTICIPANT_STATUS, participants.get(j).getStatus());
 
-					ee.appendChild(e);
+					e.appendChild(ee);
 				}
 
 				//ext participants:
 				ArrayList<String> extParticipants = appointment.getExtParticipants();
 				for (int j = 0; j < extParticipants.size(); j++)
 				{
-					e = d.createElement(TAG_EXTPARTICIPANT);
-					e.setNodeValue(extParticipants.get(i));
-					ee.appendChild(e);
+					ee = d.createElement(TAG_EXTPARTICIPANT);
+					ee.setAttribute(TAG_EXTPARTICIPANT, extParticipants.get(i));
+					e.appendChild(ee);
 				}
 
 				//location:
 				if (appointment.getRes() == null)
-				{
-					e = d.createElement(TAG_LOCATION);
-					e.setNodeValue(appointment.getLocation());
-					ee.appendChild(e);
-				}
+					e.setAttribute(TAG_LOCATION, appointment.getLocation());
 				else//reservation
-				{
-					e = d.createElement(TAG_RESERVATION);
-					e.setNodeValue(Integer.toString(appointment.getRes().getReservationID()));
-					ee.appendChild(e);
-				}
-				//start time
-				e = d.createElement(TAG_START_DATE);
-				e.setNodeValue(Long.toString(appointment.getStart().getTime()));
-				ee.appendChild(e);
-				//end time
-				e = d.createElement(TAG_END_DATE);
-				e.setNodeValue(Long.toString(appointment.getEnd().getTime()));
-				ee.appendChild(e);
+					e.setAttribute(TAG_RESERVATION, Integer.toString(appointment.getRes().getReservationID()));
+
 			}
 
 
@@ -189,6 +168,9 @@ public class CalendarManager extends Manager {
                 NodeList subElements = appointments.item(i).getChildNodes();
 
                 final ArrayList<String> extParticipants = new ArrayList<String>();
+
+                NamedNodeMap attributes = appointments.item(i).getAttributes();
+                // appointmentObj.setDescription(attributes.getNamedItem(TAG_DESC).);
 
                 //parsing one attribute:
                 for (int j = 0; j < subElements.getLength(); j++)

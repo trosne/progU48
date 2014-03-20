@@ -10,8 +10,8 @@ import org.w3c.dom.Element;
 
 public class UserManager extends Manager {
 
-	private ArrayList<User> users;
-	private ArrayList<Group> groups;
+	private final ArrayList<User> users = new ArrayList<User>();
+	private final ArrayList<Group> groups = new ArrayList<Group>();
 
     private static UserManager instance;
 
