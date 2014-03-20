@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><roomsAndRes>
+    <room capacity="10" id="awesome room"/>
+    <room capacity="4" id="shitty room"/>
+    <reservation end_date="1395324514181" id="0" room_id="shitty room" start_date="1395320914181"/>
+</roomsAndRes>
