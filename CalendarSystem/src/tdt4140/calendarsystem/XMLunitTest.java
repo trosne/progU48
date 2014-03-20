@@ -34,16 +34,18 @@ public class XMLunitTest {
 
         Appointment a = new Appointment("bollelunch", "taket", new Date(System.currentTimeMillis()),
                 new Date(System.currentTimeMillis() + 1000*60*60));
-        Participant p = new Participant();
-        p.setaUser(userManager.getUser("kajkaj"));
-        a.addParticipant(p);
-        a.setRes(roomManager.reserveRoom(roomManager.getRooms().get(0), a.getStart(), a.getEnd()));
-        a.setRes(roomManager.reserveRoom(roomManager.getRooms().get(1), a.getStart(), a.getEnd()));
+        a.addParticipant(userManager.getUser("kajkaj"));
+        a.addParticipant(userManager.getUser("benben"));
+
+        if (!a.createRes())
+            System.out.println("Unable to create reservation for " + a.getDescription());
+
         calendarManager.makeAppointment(a);
 
         roomManager.parseToXML();
         calendarManager.parseToXML();
 
-        roomManager.parseFromXML("");
+        roomManager.parseFromXML();
+        calendarManager.parseFromXML();
     }
 }

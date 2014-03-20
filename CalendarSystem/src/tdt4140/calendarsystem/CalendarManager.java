@@ -74,8 +74,8 @@ public class CalendarManager extends Manager {
 	public void parseToXML()
 	{
 		String result = "";
-        Document d = null;
-        Element root;
+        Document d;
+        Element root = null;
 		try {
 			DocumentBuilder f = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			d = f.newDocument();
@@ -136,10 +136,9 @@ public class CalendarManager extends Manager {
             tr.setOutputProperty(OutputKeys.INDENT, "yes");
             tr.setOutputProperty(OutputKeys.METHOD, "xml");
             tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            tr.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "roles.dtd");
             tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
-            tr.transform(new DOMSource(d),
+            tr.transform(new DOMSource(root),
                     new StreamResult(new FileOutputStream(calendarFile)));
 
         } catch (TransformerException te) {
@@ -148,6 +147,15 @@ public class CalendarManager extends Manager {
             System.out.println(ioe.getMessage());
         }
 	}
+
+    public Appointment getAppointment(String desc)
+    {
+        for (int i = 0; i < appointments.size(); i++)
+            if (appointments.get(i).getDescription().equals(desc))
+                return appointments.get(i);
+
+        return null;
+    }
 	
 	@Override
 	public void parseFromXML()
@@ -171,16 +179,29 @@ public class CalendarManager extends Manager {
                 // appointmentObj.setDescription(attributes.getNamedItem(TAG_DESC).);
 
                 //parsing one attribute:
-                for (int j = 0; j < subElements.getLength(); j++)
+                for (int j = 0; j < attributes.getLength(); j++)
                 {
-                    Node node = subElements.item(i);
+                    Node node = attributes.item(j);
 
                     if (node.getNodeName().equals(TAG_DESC))
                         appointmentObj.setDescription(node.getNodeValue());
-                    else if (node.getNodeName().equals(TAG_PARTICIPANT))
+                    else if (node.getNodeName().equals(TAG_LOCATION))
+                        appointmentObj.setLocation(node.getNodeValue());
+                    else if (node.getNodeName().equals(TAG_RESERVATION))
+                        appointmentObj.setRes(RoomManager.getInstance().getReservation(Integer.decode(node.getNodeValue())));
+                    else if (node.getNodeName().equals(TAG_START_DATE))
+                        appointmentObj.setStart(new Date(Long.decode(node.getNodeValue())));
+                    else if (node.getNodeName().equals(TAG_END_DATE))
+                        appointmentObj.setEnd(new Date(Long.decode(node.getNodeValue())));
+
+                }
+                for (int j = 0; j < subElements.getLength(); j++)
+                {
+                    Node node = subElements.item(j);
+                    if (node.getNodeName().equals(TAG_PARTICIPANT))
                     {
                         Participant p = new Participant();
-                        NodeList participantAttributes = node.getChildNodes();
+                        NamedNodeMap participantAttributes = node.getAttributes();
 
                         //get user and status:
                         for (int k = 0; k < participantAttributes.getLength(); k++)
@@ -194,19 +215,12 @@ public class CalendarManager extends Manager {
                     }
                     else if (node.getNodeName().equals(TAG_EXTPARTICIPANT))
                         extParticipants.add(node.getNodeValue());
-                    else if (node.getNodeName().equals(TAG_LOCATION))
-                        appointmentObj.setLocation(node.getNodeValue());
-                    else if (node.getNodeName().equals(TAG_RESERVATION))
-                        appointmentObj.setRes(RoomManager.getInstance().getReservation(Integer.getInteger(node.getNodeValue())));
-                    else if (node.getNodeName().equals(TAG_START_DATE))
-                        appointmentObj.setStart(new Date(Long.getLong(node.getNodeValue())));
-                    else if (node.getNodeName().equals(TAG_END_DATE))
-                        appointmentObj.setEnd(new Date(Long.getLong(node.getNodeValue())));
-
-                }
+                    }
 
                 appointmentObj.setExtParticipants(extParticipants);
-                this.appointments.add(appointmentObj);
+                // add if appointment doesnt exist:
+                if (getAppointment(appointmentObj.getDescription()) == null)
+                    this.appointments.add(appointmentObj);
             }
         } catch (Exception e) {
             e.printStackTrace();
