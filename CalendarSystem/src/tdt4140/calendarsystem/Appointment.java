@@ -19,13 +19,14 @@ public class Appointment {
 	 */
 	public Appointment()
 	{
-		
+		participants = new ArrayList<Participant>();
 	}
 	
 	/**
 	 * Constructor setting the location, start and end time, and description. Used for external meetings
 	 */
 	public Appointment(String description, String location, Date start, Date end) {
+        participants = new ArrayList<Participant>();
 		this.description = description;
 		this.location = location;
 		this.start = start;

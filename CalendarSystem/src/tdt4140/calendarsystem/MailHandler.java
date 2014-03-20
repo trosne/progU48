@@ -1,7 +1,8 @@
 /*
- * Description:
- *      Class to handle emails
- */
+* Description:
+*      Class to handle emails
+*/
+
 package tdt4140.calendarsystem;
 
 import com.sun.mail.smtp.SMTPTransport;
@@ -22,9 +23,9 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 /**
- *
- * @author Patrik Fridberg Bakken
- */
+*
+* @author Patrik Fridberg Bakken
+*/
 public class MailHandler {
 
     private String recipient;
@@ -48,7 +49,7 @@ public class MailHandler {
 
         // Assuming you are sending email from this host
         host = "smtp.gmail.com";
-        
+
         // Username and password
         username = "tdt4140.48";
         password = "felles2014";
@@ -121,7 +122,7 @@ public class MailHandler {
     public void sendMail() {
         Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
         final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
-        
+
         // Get system properties
         Properties properties = System.getProperties();
 
@@ -194,3 +195,4 @@ public class MailHandler {
     }
 }
 
+*/
