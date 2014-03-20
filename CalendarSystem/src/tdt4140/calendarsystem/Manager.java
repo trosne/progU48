@@ -22,6 +22,6 @@ public abstract class Manager {
 	 * Parses an XML string to java objects
 	 * @param XMLString The string to parse
 	 */
-	public abstract void parseFromXML(String XMLString);
+	public abstract void parseFromXML();
 	
 }

@@ -99,7 +99,7 @@ public class UserManager extends Manager {
 
 
 	@Override
-	public void parseFromXML(String XMLString) {
+	public void parseFromXML() {
 		
 	}
 

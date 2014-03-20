@@ -214,7 +214,7 @@ public class RoomManager extends Manager {
 	}
 
 	@Override
-	public void parseFromXML(String XMLString) {
+	public void parseFromXML() {
         //again, the string input output part is pretty unnecessary, and only complicates things..
         Document d;
         try {
