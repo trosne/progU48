@@ -30,6 +30,8 @@ public class UserManager extends Manager {
 
 	private static String userFile = "users.xml";
     private static UserManager instance;
+    
+    private String currentUser;
 
 	/**
 	 * Default constructor
@@ -347,5 +349,19 @@ public class UserManager extends Manager {
 	 */
 	public ArrayList<Group> getGroups() {
 		return groups;
+	}
+
+	/**
+	 * @return the currentUser
+	 */
+	public String getCurrentUser() {
+		return currentUser;
+	}
+
+	/**
+	 * @param currentUser the currentUser to set
+	 */
+	public void setCurrentUser(String currentUser) {
+		this.currentUser = currentUser;
 	}
 }

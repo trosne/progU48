@@ -111,7 +111,7 @@ public class LogIn extends JFrame {
 				setVisible(false);
 				dispose();
 				// Open the MainFrame
-				MainFrame nextFrame = new MainFrame();
+				MainFrame nextFrame = new MainFrame(UserManager.getInstance(), CalendarManager.getInstance(), RoomManager.getInstance());
 				nextFrame.setVisible(true);
 				nextFrame.setUsername(textFUsr.getText());
 			}

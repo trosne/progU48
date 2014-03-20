@@ -227,4 +227,20 @@ public class CalendarManager extends Manager {
         }
 
     }
+
+	/**
+	 * @return the appointments
+	 */
+	public ArrayList<Appointment> getAppointments() {
+		return appointments;
+	}
+
+	/**
+	 * @param appointments the appointments to set
+	 */
+	public void setAppointments(ArrayList<Appointment> appointments) {
+		this.appointments = appointments;
+	}
+	
+	
 }
