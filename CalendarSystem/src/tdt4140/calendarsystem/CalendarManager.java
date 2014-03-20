@@ -71,7 +71,7 @@ public class CalendarManager extends Manager {
 	}
 	
 	@Override
-	public String parseToXML()
+	public void parseToXML()
 	{
 		String result = "";
         Document d = null;
@@ -127,6 +127,7 @@ public class CalendarManager extends Manager {
 		} 
 		catch (Exception e) {
 			System.out.println("Exception writing calendar manager to file: \n" + e.getMessage());
+            e.printStackTrace();
 		}
 
         //save the file:
@@ -146,13 +147,10 @@ public class CalendarManager extends Manager {
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());
         }
-
-        //skip the string export, the above bit of code saves the file, and is much simpler.
-		return "";
 	}
 	
 	@Override
-	public void parseFromXML(String XMLString)
+	public void parseFromXML()
 	{
         //again, the string input output part is pretty unnecessary, and only complicates things..
         Document d;

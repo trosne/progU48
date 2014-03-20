@@ -21,7 +21,7 @@ public class XMLunitTest {
 
         userManager.addUser("Katja Kaj", "kajkaj", "jeglikerboller", "katja@kaj.com");
         userManager.addUser("Bente bent", "benben", "jeghaterboller", "bente@bent.co.uk");
-/*
+
         MeetingRoom room = new MeetingRoom();
         room.setCap(10);
         room.setRoomID("awesome room");
@@ -42,7 +42,7 @@ public class XMLunitTest {
         calendarManager.makeAppointment(a);
 
         roomManager.parseToXML();
-        */
+        calendarManager.parseToXML();
 
         roomManager.parseFromXML("");
     }

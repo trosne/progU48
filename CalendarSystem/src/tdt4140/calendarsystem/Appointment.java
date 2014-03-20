@@ -20,6 +20,7 @@ public class Appointment {
 	public Appointment()
 	{
 		participants = new ArrayList<Participant>();
+        extParticipants = new ArrayList<String>();
 	}
 	
 	/**
