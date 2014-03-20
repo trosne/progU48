@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?><appointments>
+    <appointment description="bollelunch" end_date="1395324514181" reservation="0" start_date="1395320914181">
+        <participant status="Creator" username="kajkaj"/>
+        <participant status="Not responded" username="benben"/>
+    </appointment>
+</appointments>
