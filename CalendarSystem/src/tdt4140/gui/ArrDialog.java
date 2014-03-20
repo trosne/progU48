@@ -24,6 +24,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.JList;
 import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
 
 
 public class ArrDialog{
@@ -312,6 +313,14 @@ public class ArrDialog{
 		});
 		btnBookARoom.setBounds(180, 132, 111, 23);
 		contentPanel.add(btnBookARoom);
+		
+		JCheckBox chckbxHideAppointment = new JCheckBox("Hide appointment");
+		chckbxHideAppointment.setBounds(354, 380, 117, 23);
+		contentPanel.add(chckbxHideAppointment);
+		
+		JCheckBox chckbxAccepted = new JCheckBox("Accepted");
+		chckbxAccepted.setBounds(354, 354, 97, 23);
+		contentPanel.add(chckbxAccepted);
 
 
 		
