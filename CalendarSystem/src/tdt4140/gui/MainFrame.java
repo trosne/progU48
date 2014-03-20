@@ -15,11 +15,14 @@ import javax.swing.JDialog;
 
 import tdt4140.calendarsystem.Appointment;
 import tdt4140.calendarsystem.CalendarManager;
+import tdt4140.calendarsystem.Participant;
 import tdt4140.calendarsystem.RoomManager;
 import tdt4140.calendarsystem.UserManager;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.text.DateFormat;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,12 +49,8 @@ public class MainFrame extends JFrame {
 
 	
 	public void setUsername(String usr){
-	
-		System.out.println(usr);
-		setTitle("Username" + "-" + usr);
-		
-
-		
+		//System.out.println(usr);
+		setTitle("Username" + "-" + usr);	
 	}
 	
 //	public static void main(String[] args) {
@@ -69,11 +68,11 @@ public class MainFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame(UserManager uM, CalendarManager cM, RoomManager rM) {
+	public MainFrame() {
 		
-		this._userManager = uM;
-		this._calendarManager = cM;
-		this._roomManager = rM;
+		this._userManager = UserManager.getInstance();
+		this._calendarManager = CalendarManager.getInstance();
+		this._roomManager = RoomManager.getInstance();
 		
 		//Mainframe properties
 		
@@ -156,8 +155,8 @@ public class MainFrame extends JFrame {
 	    ArrPanel.add(lblAddNewA);
 	   
 	    //Add headers to appointments table
-        String[] headers = {"Start", "End", "Location", "Description", "Participant"}; //All headers
-        for (int i=0; i<5; i++){
+        String[] headers = {"Date", "Start", "End", "Location", "Description", "Status", "Participant"}; //All headers
+        for (int i=0; i<7; i++){
         	mtblArrange.addColumn(headers[i]);
         }
         //Set table background
@@ -166,7 +165,7 @@ public class MainFrame extends JFrame {
         tblArrange.getTableHeader().setResizingAllowed(false);
         tblArrange.getTableHeader().setReorderingAllowed(false);
         
-        mtblArrange.setColumnCount(5);
+        mtblArrange.setColumnCount(7);
        // mtblArrange.setRowCount(6);
         //mtblArrange.setr
         
@@ -182,7 +181,7 @@ public class MainFrame extends JFrame {
         
 	}
 	
-	private static void refreshAppoint(){
+	public static void refreshAppoint(){
 		for (int i = 0; i < mtblArrange.getRowCount(); i++) {
 	        for (int j = 0; j < mtblArrange.getColumnCount(); j++) {
 	        	mtblArrange.setValueAt(null, i, j);
@@ -192,45 +191,67 @@ public class MainFrame extends JFrame {
 		// Populate the appointment table
 		
 		String date = calendarPanel.getCurrentDate();
-		Calendar currCal = new GregorianCalendar();
-		Date current = null;
-		try {
-			current = new SimpleDateFormat("dd.MM.YYYY").parse(date);
-			currCal.setTime(current);
-		}
-		catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-		
-		for (Appointment appointment : _calendarManager.getAppointments()) {
-			Calendar appCal = new GregorianCalendar();
-			appCal.setTime(appointment.getStart());
-			if (appCal.get(Calendar.YEAR) == currCal.get(Calendar.YEAR) && appCal.get(Calendar.MONTH) == 
-					currCal.get(Calendar.MONTH) && appCal.get(Calendar.DAY_OF_MONTH) == currCal.get(Calendar.DAY_OF_MONTH)) {
-				Vector row = new Vector();
-				Object[][] rowData = {{appointment.getStart()}};
-			}
-		}
-		Vector as = new Vector();
-		Object[][] rowData = {{"Hello", "World",true}};
-		as.add("Vector Hello");
-		as.add("Vector World");
-		as.add(true);
-		
+		//System.out.println(date);
+		Calendar currCal = GregorianCalendar.getInstance();
+		String[] dateStrings = date.split("/");
+		currCal.set(Integer.parseInt(dateStrings[2]), Integer.parseInt(dateStrings[1]), Integer.parseInt(dateStrings[0]));
 
-		 for (int j = 0; j< 3; j++){
-			 mtblArrange.addRow(as);
-			 //mtblArrange.setValueAt(i+j, i, j);
-		    	}
-		   
-		    
-		
-		
-	}
-	
-	
-	
-	
-	
-	
+		for (Appointment appointment : _calendarManager.getAppointments()) {
+			Calendar appCalS = new GregorianCalendar();
+			Calendar appCalE = new GregorianCalendar();
+			appCalS.setTime(appointment.getStart());
+			if (appCalS.get(Calendar.YEAR) == currCal.get(Calendar.YEAR) && appCalS.get(Calendar.MONTH) == 
+					currCal.get(Calendar.MONTH) && appCalS.get(Calendar.DAY_OF_MONTH) == currCal.get(Calendar.DAY_OF_MONTH)) {
+				
+				Vector row = new Vector();
+				String appDate = appCalS.get(Calendar.DATE) + "." + (appCalS.get(Calendar.MONTH)+1) + "." + appCalS.get(Calendar.YEAR);
+				String start = null;
+				if (appCalS.get(Calendar.MINUTE) < 10)
+					start = appCalS.get(Calendar.HOUR_OF_DAY) + ":0" + appCalS.get(Calendar.MINUTE);
+				else
+					start = appCalS.get(Calendar.HOUR_OF_DAY) + ":" + appCalS.get(Calendar.MINUTE);
+				
+				String end = null;
+				if (appCalE.get(Calendar.MINUTE) < 10)
+					end = appCalE.get(Calendar.HOUR_OF_DAY) + ":0" + appCalE.get(Calendar.MINUTE);
+				else
+					end = appCalE.get(Calendar.HOUR_OF_DAY) + ":" + appCalE.get(Calendar.MINUTE);
+					
+				String status = null;
+				boolean isParticipant = false;
+				
+				for (Participant participant : appointment.getParticipants()) {
+					if (participant.getaUser().isEqual(_userManager.getCurrentUser())) {
+						isParticipant = true;
+						status = participant.getStatus();
+						break;
+					}
+				}
+				if (!isParticipant)
+					status = "";
+				
+				Vector<Object> rowData = new Vector<>();
+				if (appointment.getRes() == null) {
+					rowData.add(appDate);
+					rowData.add(start);
+					rowData.add(end);
+					rowData.add(appointment.getLocation());
+					rowData.add(appointment.getDescription());
+					rowData.add(status);
+					rowData.add(isParticipant);					
+				}
+				else {
+					rowData.add(appDate);
+					rowData.add(start);
+					rowData.add(end);
+					rowData.add(appointment.getRes().getRoom().getRoomID());
+					rowData.add(appointment.getDescription());
+					rowData.add(status);
+					rowData.add(isParticipant);
+				}
+				
+				mtblArrange.addRow(rowData);
+			}
+		}	
+	}	
 }

@@ -13,6 +13,7 @@ import javax.swing.JButton;
 
 import tdt4140.calendarsystem.CalendarManager;
 import tdt4140.calendarsystem.RoomManager;
+import tdt4140.calendarsystem.User;
 import tdt4140.calendarsystem.UserManager;
 
 import java.awt.event.ActionListener;
@@ -51,11 +52,11 @@ public class LogIn extends JFrame {
 	/**
 	 * Create the LogIn frame.
 	 */
-	public LogIn(UserManager uM, CalendarManager cM, RoomManager rM) {
+	public LogIn() {
 		
-		this._userManager = uM;
-		this._calendarManager = cM;
-		this._roomManager = rM;
+		this._userManager = UserManager.getInstance();
+		this._calendarManager = CalendarManager.getInstance();
+		this._roomManager = RoomManager.getInstance();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 291, 208);
@@ -107,11 +108,17 @@ public class LogIn extends JFrame {
 			if (loggedIn) {
 				_roomManager.parseFromXML();
 				_calendarManager.parseFromXML();
+				for (User user : _userManager.getUsers()) {
+					if (user.getUsername().equals(textFUsr.getText())) {
+						_userManager.setCurrentUser(user);
+						break;
+					}
+				}
 				// Close the login window
 				setVisible(false);
 				dispose();
 				// Open the MainFrame
-				MainFrame nextFrame = new MainFrame(UserManager.getInstance(), CalendarManager.getInstance(), RoomManager.getInstance());
+				MainFrame nextFrame = new MainFrame();
 				nextFrame.setVisible(true);
 				nextFrame.setUsername(textFUsr.getText());
 			}

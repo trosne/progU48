@@ -20,7 +20,7 @@ public class Main {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					LogIn frame = new LogIn(UserManager.getInstance(), CalendarManager.getInstance(), RoomManager.getInstance());
+					LogIn frame = new LogIn();
 					frame.setVisible(true);
 
 				} catch (Exception e) {

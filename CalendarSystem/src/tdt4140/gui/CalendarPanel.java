@@ -107,6 +107,8 @@ public class CalendarPanel extends JPanel {
 		realYear = cal.get(GregorianCalendar.YEAR); // Get year
 		currentMonth = realMonth; // Match month and year
 		currentYear = realYear;
+		currentDate = cal.get(GregorianCalendar.DATE) + "/" + currentMonth + "/"
+				+ currentYear;
 	}
 
 	private void addHeaders() {
@@ -283,31 +285,31 @@ public class CalendarPanel extends JPanel {
 
 					switch (lblMonth.getText().toLowerCase()) {
 					case "january":
-						month = "01";
+						month = "1";
 						break;
 					case "february":
-						month = "02";
+						month = "2";
 						break;
 					case "march":
-						month = "03";
+						month = "3";
 						break;
 					case "april":
-						month = "04";
+						month = "4";
 						break;
 					case "may":
-						month = "05";
+						month = "5";
 						break;
 					case "june":
-						month = "06";
+						month = "6";
 						break;
 					case "july":
-						month = "07";
+						month = "7";
 						break;
 					case "august":
-						month = "08";
+						month = "8";
 						break;
 					case "september":
-						month = "09";
+						month = "9";
 						break;
 					case "october":
 						month = "10";
@@ -322,15 +324,12 @@ public class CalendarPanel extends JPanel {
 						month = "0";
 						break;
 					}
-					currentDate = tblCalendar.getValueAt(row, column) + "." + month + "."
+					currentDate = tblCalendar.getValueAt(row, column) + "/" + month + "/"
 							+ currentYear;
 					System.out.println(currentDate);
 
 				}
-			}
-
-			else if (e.getClickCount() == 1) {
-
+				MainFrame.refreshAppoint();
 				refreshCalendar(currentMonth, currentYear);
 			}
 
