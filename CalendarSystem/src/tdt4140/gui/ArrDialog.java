@@ -14,8 +14,12 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
+import java.lang.reflect.Array;
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -28,7 +32,8 @@ public class ArrDialog{
     static Container pane;
     private JTextField txtDescr;
     private JTextField txtLocation;
-    private JTextField txtDateDay, txtDateMonth, txtDateYear;
+    private JComboBox<Integer> cmbDay, cmbYear;
+    private JComboBox<String> cmbMonth;
     DefaultListModel mFromLst = new DefaultListModel();
     DefaultListModel mToLst = new DefaultListModel();
     DefaultListModel mExtLst = new DefaultListModel();
@@ -134,7 +139,7 @@ public class ArrDialog{
 		lblNewLabel.setBounds(10, 11, 46, 14);
 		contentPanel.add(lblNewLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("Decription");
+		JLabel lblNewLabel_1 = new JLabel("Description");
 		lblNewLabel_1.setBounds(10, 36, 59, 14);
 		contentPanel.add(lblNewLabel_1);
 		
@@ -155,7 +160,7 @@ public class ArrDialog{
 		contentPanel.add(lblNewLabel_5);
 		
 		//Create and place all editable/non-editable text fields on Content Panel 
-		
+
 		txtDescr = new JTextField();
 		txtDescr.setBounds(79, 33, 212, 20);
 		contentPanel.add(txtDescr);
@@ -180,11 +185,11 @@ public class ArrDialog{
 
         //radiobuttons for duration and end field
         final JRadioButton rbTEnd = new JRadioButton();
-        rbTEnd.setBounds(190, 88, 10, 10);
+        rbTEnd.setBounds(190, 88, 91, 20);
         rbTEnd.setSelected(true);
 
         final JRadioButton rbDur = new JRadioButton();
-        rbDur.setBounds(190, 113, 10, 10);
+        rbDur.setBounds(190, 108, 91, 20);
 
         ButtonGroup timeGroup = new ButtonGroup();
         timeGroup.add(rbTEnd);
@@ -222,15 +227,33 @@ public class ArrDialog{
 		txtLocation.setBounds(79, 133, 91, 20);
 		contentPanel.add(txtLocation);
 		txtLocation.setColumns(10);
-		
-		txtDate = new JTextField();
-		txtDate.setEditable(false);
-		txtDate.setBounds(79, 8, 108, 20);
-		contentPanel.add(txtDate);
-        txtDate.setText(appointment.getStart().getDate() + "/" + (appointment.getStart().getMonth() + 1) + " " +
-                (1900 + appointment.getStart().getYear()));
-		txtDate.setColumns(10);
-		
+
+
+        // Date picking:
+
+        //day
+        Integer[] days = new Integer[31];
+        for (int i = 0; i < 31; i++)
+            days[i] = i + 1;
+        cmbDay = new JComboBox<>(days);
+        cmbDay.setBounds(79, 8, 60, 20);
+        contentPanel.add(cmbDay);
+
+        //month
+        String[] months = new DateFormatSymbols(Locale.ENGLISH).getMonths();
+
+        cmbMonth = new JComboBox<>(months);
+        cmbMonth.setBounds(149, 8, 80, 20);
+        contentPanel.add(cmbMonth);
+
+        //year
+        Integer[] years = new Integer[30];
+        for (int i = 0; i < 30; i++)
+            years[i] = i + 2014;
+        cmbYear = new JComboBox<>(years);
+        cmbYear.setBounds(239, 8, 50, 20);
+        contentPanel.add(cmbYear);
+
 		
 		// Create and place button to delete current arrangement
 		JButton btnNewButton = new JButton("Delete appointment");
@@ -272,8 +295,8 @@ public class ArrDialog{
 	    		
 	    			JList target = (JList)e.getSource();
 	    			int index = target.getSelectedIndex();
-	    			mToLst.addElement(target.getModel().getElementAt(index));
-	    	
+                    if (!mToLst.contains(mFromLst.get(index)))
+    	    			mToLst.addElement(target.getModel().getElementAt(index));
 	    		}
 	    	}
 		});
@@ -299,8 +322,6 @@ public class ArrDialog{
 	    			JList target = (JList)e.getSource();
 	    			DefaultListModel model = (DefaultListModel)target.getModel();
 	    			int index = target.getSelectedIndex();
-	    			if (index !=-1)
-	    				model.remove(index);
 	    		}
 	    	}
 		});
@@ -377,7 +398,19 @@ public class ArrDialog{
 		JButton btnSaveAndExit = new JButton("Save and exit");
 		btnSaveAndExit.setBounds(369, 432, 108, 23);
 		contentPanel.add(btnSaveAndExit);
-		//--ActionListener
+
+        //Exit function:
+        btnSaveAndExit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+
+
+                CalendarManager.getInstance().makeAppointment(appointment);
+
+                d.setVisible(false);
+            }
+        });
 		
 		//Create and add a button to open Room Booking dialog 
 		JButton btnBookARoom = new JButton("Book a room");
@@ -430,7 +463,12 @@ public class ArrDialog{
 		
 		// Make it visible after everything is added !!!!!!
 		d.setVisible(true);
-		
-
 	}
+
+    private void updateDateFromFields()
+    {
+        Date startDate = appointment.getStart();
+        Date endDate = appointment.getEnd();
+        startDate.setDate(cmbDay.getSelectedIndex() + 1);
+    }
 }

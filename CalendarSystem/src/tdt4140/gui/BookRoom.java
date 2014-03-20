@@ -50,7 +50,7 @@ public class BookRoom {
 		
 		JButton btnBook = new JButton("Book it !");
 		btnBook.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e) {
 
                 //if it already has a reservation:
                 if (appointment.getRes() != null)
@@ -61,25 +61,35 @@ public class BookRoom {
                                 appointment.getStart(), appointment.getEnd()));
                 locationField.setText(appointment.getRes().getRoom().getRoomID());
                 bookDialog.setVisible(false);
-			}
-		});
-		btnBook.setBounds(195, 75, 89, 23);
-		contentPanel.add(btnBook);
+            }
+        });
 		
+
 
 		cmbxRoom.setBounds(10, 27, 89, 20);
         ArrayList<MeetingRoom> available = RoomManager.getInstance().
                 generateAvailableRooms(appointment.getStart(), appointment.getEnd());
 
-        //populate dropdown menu
-        for (int i = 0; i < available.size(); i++)
-            cmbxRoom.addItem(available.get(i).getRoomID());
+        if (available.size() > 0)
+        {
+            //populate dropdown menu
+            for (int i = 0; i < available.size(); i++)
+                cmbxRoom.addItem(available.get(i).getRoomID());
 
-		contentPanel.add(cmbxRoom);
+            contentPanel.add(cmbxRoom);
+            JLabel lblChooseRoom = new JLabel("Choose room");
+            lblChooseRoom.setBounds(10, 11, 89, 14);
+            contentPanel.add(lblChooseRoom);
+            btnBook.setBounds(195, 75, 89, 23);
+            contentPanel.add(btnBook);
+        }
+        else
+        {
+            JLabel lblNoRooms = new JLabel("No rooms available in this time slot.");
+            lblNoRooms.setBounds(10, 11, 309, 14);
+            contentPanel.add(lblNoRooms);
+        }
 
-        JLabel lblChooseRoom = new JLabel("Choose room");
-		lblChooseRoom.setBounds(10, 11, 89, 14);
-		contentPanel.add(lblChooseRoom);
 		bookDialog.setVisible(true);
 		
 		
