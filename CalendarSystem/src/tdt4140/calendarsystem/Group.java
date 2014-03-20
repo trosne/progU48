@@ -13,7 +13,14 @@ public class Group {
 	 */
 	public Group()
 	{
-		
+		users = new ArrayList<>();
+		subGroups = new ArrayList<>();
+	}
+	
+	public Group(String name) {
+		users = new ArrayList<>();
+		subGroups = new ArrayList<>();
+		this.name = name;
 	}
 	
 	public boolean addUserToGroup(User u)

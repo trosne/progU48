@@ -13,16 +13,31 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JDialog;
 
+import tdt4140.calendarsystem.Appointment;
+import tdt4140.calendarsystem.CalendarManager;
+import tdt4140.calendarsystem.RoomManager;
+import tdt4140.calendarsystem.UserManager;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Vector;
 
 
 public class MainFrame extends JFrame {
 
+	private static UserManager _userManager;
+	private static RoomManager _roomManager;
+	private static CalendarManager _calendarManager;
+	
 	private JPanel contentPane;
+	private static CalendarPanel calendarPanel;
 	static MainFrame mainFrame; 
 	static JTable tblArrange;
 	static DefaultTableModel mtblArrange;
@@ -38,22 +53,27 @@ public class MainFrame extends JFrame {
 
 		
 	}
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-						mainFrame = new MainFrame();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//						mainFrame = new MainFrame();
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame() {
+	public MainFrame(UserManager uM, CalendarManager cM, RoomManager rM) {
+		
+		this._userManager = uM;
+		this._calendarManager = cM;
+		this._roomManager = rM;
 		
 		//Mainframe properties
 		
@@ -69,7 +89,7 @@ public class MainFrame extends JFrame {
 		setContentPane(contentPane);
 		
 		//Add Calendar Panel (CalendarPanel.java)
-		CalendarPanel calendarPanel = new CalendarPanel();
+		calendarPanel = new CalendarPanel();
 		calendarPanel.setLocation(209, 11);
 		contentPane.add(calendarPanel);
 		
@@ -136,8 +156,8 @@ public class MainFrame extends JFrame {
 	    ArrPanel.add(lblAddNewA);
 	   
 	    //Add headers to appointments table
-        String[] headers = {"Date", "Description","Participant"}; //All headers
-        for (int i=0; i<3; i++){
+        String[] headers = {"Start", "End", "Location", "Description", "Participant"}; //All headers
+        for (int i=0; i<5; i++){
         	mtblArrange.addColumn(headers[i]);
         }
         //Set table background
@@ -146,7 +166,7 @@ public class MainFrame extends JFrame {
         tblArrange.getTableHeader().setResizingAllowed(false);
         tblArrange.getTableHeader().setReorderingAllowed(false);
         
-        mtblArrange.setColumnCount(3);
+        mtblArrange.setColumnCount(5);
        // mtblArrange.setRowCount(6);
         //mtblArrange.setr
         
@@ -168,17 +188,29 @@ public class MainFrame extends JFrame {
 	        	mtblArrange.setValueAt(null, i, j);
 	        }
 	    }
-			
-		
-	
+				
 		// Populate the appointment table
-	   /* for (int i = 0; i < 6; i++) {
-	    	for (int j = 0; j< 3; j++){
-	    		//mtblArrange.addRow(rowData);
-	    		mtblArrange.setValueAt(i+j, i, j);
-	    	}
-	   
-	    }*/
+		
+		String date = calendarPanel.getCurrentDate();
+		Calendar currCal = new GregorianCalendar();
+		Date current = null;
+		try {
+			current = new SimpleDateFormat("dd.MM.YYYY").parse(date);
+			currCal.setTime(current);
+		}
+		catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		for (Appointment appointment : _calendarManager.getAppointments()) {
+			Calendar appCal = new GregorianCalendar();
+			appCal.setTime(appointment.getStart());
+			if (appCal.get(Calendar.YEAR) == currCal.get(Calendar.YEAR) && appCal.get(Calendar.MONTH) == 
+					currCal.get(Calendar.MONTH) && appCal.get(Calendar.DAY_OF_MONTH) == currCal.get(Calendar.DAY_OF_MONTH)) {
+				Vector row = new Vector();
+				Object[][] rowData = {{appointment.getStart()}};
+			}
+		}
 		Vector as = new Vector();
 		Object[][] rowData = {{"Hello", "World",true}};
 		as.add("Vector Hello");

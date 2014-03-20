@@ -20,6 +20,7 @@ public class Appointment {
 	public Appointment()
 	{
 		participants = new ArrayList<Participant>();
+        extParticipants = new ArrayList<String>();
 	}
 	
 	/**
@@ -27,6 +28,7 @@ public class Appointment {
 	 */
 	public Appointment(String description, String location, Date start, Date end) {
         participants = new ArrayList<Participant>();
+        extParticipants = new ArrayList<String>();
 		this.description = description;
 		this.location = location;
 		this.start = start;
@@ -49,12 +51,28 @@ public class Appointment {
 	
 	/**
 	 * Adds a participant to the calendar appointment
-	 * @param x The participant to add
+	 * @param x The user to add
 	 */
-	public void addParticipant(Participant x)
+	public void addParticipant(User x)
 	{
-		participants.add(x);
+        Participant p = new Participant(x);
+
+        if (participants.size() == 0)
+            p.setStatus(Participant.STATUS_CREATOR);
+
+		participants.add(p);
 	}
+
+    /**
+     * Old version, adds a participant to the calendar appointment.
+     * @param x The participant to add
+     */
+    public void addParticipant(Participant x)
+    {
+        if (participants.size() == 0)
+            x.setStatus(Participant.STATUS_CREATOR);
+        participants.add(x);
+    }
 	
 	/**
 	 * Removes a participant from the calendar appointment
@@ -184,6 +202,34 @@ public class Appointment {
 	public void setRes(Reservation res) {
 		this.res = res;
 	}
+
+    /**
+     * Function to automatically create a reservation for the appointment.
+     * @return true if success, false if no rooms are available
+     */
+    public boolean createRes()
+    {
+        RoomManager rooms = RoomManager.getInstance();
+        ArrayList<MeetingRoom> availableRooms = rooms.generateAvailableRooms(start, end);
+
+        MeetingRoom bestFit = null;
+        for (int i = 0; i < availableRooms.size(); i++)
+        {
+            MeetingRoom temp = availableRooms.get(i);
+
+            if ((bestFit == null || temp.getCap() < bestFit.getCap()) && temp.getCap() >= participants.size())
+                bestFit = temp;
+        }
+
+        if (bestFit != null)
+        {
+            res = rooms.reserveRoom(bestFit, start, end);
+            return true;
+        }
+        else
+            return false;
+
+    }
 	
 	
 }

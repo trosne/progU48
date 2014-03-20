@@ -30,6 +30,8 @@ public class UserManager extends Manager {
 
 	private static String userFile = "users.xml";
     private static UserManager instance;
+    
+    private String currentUser;
 
 	/**
 	 * Default constructor
@@ -71,6 +73,59 @@ public class UserManager extends Manager {
 		// add user to the list of users
 		users.add(temp);
 
+		return true;
+	}
+	
+	/**
+	 * Add user by User object
+	 * @param user
+	 * @return true if successful, false if not
+	 */
+	public boolean addUser(User user) {
+
+		// check user uniqueness and that password is not empty
+		for (int i = 0; i < users.size(); i++) {
+			if (users.get(i).isEqual(user))
+				return false;
+		}
+		if (user.getPassword() == null)
+			return false;
+
+		// add user to the list of users
+		users.add(user);
+
+		return true;
+	}
+	
+	/**
+	 * Add group by name
+	 * @param name
+	 * @return true if successful, false if not
+	 */
+	public boolean addGroup(String name) {
+		for (int i = 0; i < groups.size(); i++) {
+			if (groups.get(i).getName().equals(name)) {
+				return false;
+			}
+		}
+		
+		groups.add(new Group(name));
+		return true;
+	}
+	
+	/**
+	 * Add group with Group object
+	 * @param group
+	 * @return true if successful, false if not
+	 */
+	public boolean addGroup(Group group) {
+		for (int i = 0; i < groups.size(); i++) {
+			if (groups.get(i).getName().equals(group.getName())) {
+				return false;
+			}
+		}
+		
+		groups.add(group);
 		return true;
 	}
 
@@ -278,5 +333,35 @@ public class UserManager extends Manager {
             System.out.println("IO exception in user manager XML.");
             System.out.println(ioe.getMessage());
         }
+	}
+
+	/**
+	 * Gets user list
+	 * @return the users
+	 */
+	public ArrayList<User> getUsers() {
+		return users;
+	}
+
+	/**
+	 * Gets group list
+	 * @return the groups
+	 */
+	public ArrayList<Group> getGroups() {
+		return groups;
+	}
+
+	/**
+	 * @return the currentUser
+	 */
+	public String getCurrentUser() {
+		return currentUser;
+	}
+
+	/**
+	 * @param currentUser the currentUser to set
+	 */
+	public void setCurrentUser(String currentUser) {
+		this.currentUser = currentUser;
 	}
 }
