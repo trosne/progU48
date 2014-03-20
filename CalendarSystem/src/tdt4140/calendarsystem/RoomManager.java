@@ -154,7 +154,7 @@ public class RoomManager extends Manager {
 	}
 
 	@Override
-	public String parseToXML() {
+	public void parseToXML() {
         String result = "";
         Document d = null;
         Element root = null;
@@ -211,8 +211,6 @@ public class RoomManager extends Manager {
             System.out.println("IO exception in room manager XML.");
             System.out.println(ioe.getMessage());
         }
-
-        return null;
 	}
 
 	@Override
