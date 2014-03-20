@@ -1,9 +1,6 @@
 package tdt4140.calendarsystem;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -33,6 +30,8 @@ public class RoomManager extends Manager {
 	public RoomManager()
 	{
 		instance = this;
+        rooms = new ArrayList<MeetingRoom>();
+        bookings = new ArrayList<Reservation>();
 	}
 
     /**
@@ -95,15 +94,25 @@ public class RoomManager extends Manager {
 		this.bookings = bookings;
 	}
 
-	public boolean reserveRoom(MeetingRoom room, Date start, Date end)
+    /**
+     * Reserve room
+     * @param room
+     * @param start
+     * @param end
+     * @return the reservation if there is any, or null
+     */
+	public Reservation reserveRoom(MeetingRoom room, Date start, Date end)
 	{
 		if (checkAvailability(room, start, end)){
-			int resID = bookings.get(bookings.size() - 1).getReservationID() + 1;
+			int resID = -1;
+            //find first non-used id:
+            while(getReservation(++resID) != null);
+
 			Reservation res = new Reservation(room, resID, start, end);
 			bookings.add(res);
-			return true;
+			return res;
 		}
-		return false;
+		return null;
 	}
 	
 	public void removeReservation(Reservation res)
@@ -148,11 +157,13 @@ public class RoomManager extends Manager {
 	public String parseToXML() {
         String result = "";
         Document d = null;
+        Element root = null;
         try {
             DocumentBuilder f = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             d = f.newDocument();
 
-            Element root = d.createElement("roomsAndRes");
+            root = d.createElement("roomsAndRes");
+
             Element e = null, ee = null;
             for (int i = 0; i < rooms.size(); i++)
             {
@@ -160,39 +171,22 @@ public class RoomManager extends Manager {
                 ee = d.createElement(TAG_ROOM);
                 root.appendChild(ee);
 
-                //id
-                e = d.createElement(TAG_ID);
-                e.setNodeValue(room.getRoomID());
-                ee.appendChild(e);
-                //capacity
-                e = d.createElement(TAG_CAPACITY);
-                e.setNodeValue(Integer.toString(room.getCap()));
-                ee.appendChild(e);
+                ee.setAttribute(TAG_ID, room.getRoomID());
+                ee.setAttribute(TAG_CAPACITY, Integer.toString(room.getCap()));
             }
 
-            for (int i = 0; i < rooms.size(); i++)
+            for (int i = 0; i < bookings.size(); i++)
             {
                 Reservation reservation = bookings.get(i);
                 ee = d.createElement(TAG_RESERVATION);
                 root.appendChild(ee);
 
-                //id
-                e = d.createElement(TAG_ID);
-                e.setNodeValue(Integer.toString(reservation.getReservationID()));
-                ee.appendChild(e);
-                //room id
-                e = d.createElement(TAG_ROOM_ID);
-                e.setNodeValue(reservation.getRoom().getRoomID());
-                ee.appendChild(e);
-                //start date
-                e = d.createElement(TAG_START_DATE);
-                e.setNodeValue(Long.toString(reservation.getStart().getTime()));
-                ee.appendChild(e);
-                //end date
-                e = d.createElement(TAG_END_DATE);
-                e.setNodeValue(Long.toString(reservation.getEnd().getTime()));
-                ee.appendChild(e);
+                ee.setAttribute(TAG_ID, Integer.toString(reservation.getReservationID()));
+                ee.setAttribute(TAG_ROOM_ID, reservation.getRoom().getRoomID());
+                ee.setAttribute(TAG_START_DATE, Long.toString(reservation.getStart().getTime()));
+                ee.setAttribute(TAG_END_DATE, Long.toString(reservation.getEnd().getTime()));
             }
+
         }
         catch (Exception e) {
             System.out.println("Exception writing room manager to file: \n" + e.getMessage());
@@ -204,15 +198,17 @@ public class RoomManager extends Manager {
             tr.setOutputProperty(OutputKeys.INDENT, "yes");
             tr.setOutputProperty(OutputKeys.METHOD, "xml");
             tr.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-            tr.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, "roles.dtd");
             tr.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 
-            tr.transform(new DOMSource(d),
+            tr.transform(new DOMSource(root),
                     new StreamResult(new FileOutputStream(roomFile)));
 
+
         } catch (TransformerException te) {
+            System.out.println("Error transforming room manager XML.");
             System.out.println(te.getMessage());
         } catch (IOException ioe) {
+            System.out.println("IO exception in room manager XML.");
             System.out.println(ioe.getMessage());
         }
 
@@ -235,30 +231,30 @@ public class RoomManager extends Manager {
                 if (subNode.getNodeName().equals(TAG_ROOM))
                 {
                     MeetingRoom room  = new MeetingRoom();
-                    NodeList attributes = subNode.getChildNodes();
+                    NamedNodeMap attributes = subNode.getAttributes();
                     for (int j = 0; j < attributes.getLength(); j++)
                     {
                         if (attributes.item(j).getNodeName().equals(TAG_ID))
-                            room.setRoomID(attributes.item(j).getNodeValue());
+                            room.setRoomID(attributes.item(j).getTextContent());
                         else if (attributes.item(j).getNodeName().equals(TAG_CAPACITY))
-                            room.setCap(Integer.getInteger(attributes.item(j).getNodeValue()));
+                            room.setCap(Integer.decode(attributes.item(j).getNodeValue()));
                     }
                     rooms.add(room);
                 }
                 else if (subNode.getNodeName().equals(TAG_RESERVATION))
                 {
                     Reservation res = new Reservation();
-                    NodeList attributes = subNode.getChildNodes();
+                    NamedNodeMap attributes = subNode.getAttributes();
                     for (int j = 0; j < attributes.getLength(); j++)
                     {
                         if (attributes.item(j).getNodeName().equals(TAG_ROOM_ID))
                             res.setRoom(getRoom(attributes.item(j).getNodeValue()));
                         else if (attributes.item(j).getNodeName().equals(TAG_ID))
-                            res.setReservationID(Integer.getInteger(attributes.item(j).getNodeValue()));
+                            res.setReservationID(Integer.decode(attributes.item(j).getNodeValue()));
                         else if (attributes.item(j).getNodeName().equals(TAG_START_DATE))
-                            res.setStart(new Date(Long.getLong(attributes.item(j).getNodeValue())));
+                            res.setStart(new Date(Long.decode(attributes.item(j).getNodeValue())));
                         else if (attributes.item(j).getNodeName().equals(TAG_END_DATE))
-                            res.setEnd(new Date(Long.getLong(attributes.item(j).getNodeValue())));
+                            res.setEnd(new Date(Long.decode(attributes.item(j).getNodeValue())));
                     }
                     bookings.add(res);
                 }
