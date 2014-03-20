@@ -2,12 +2,15 @@ package tdt4140.gui;
 
 
 
+import tdt4140.calendarsystem.Appointment;
+
 import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -39,6 +42,8 @@ public class ArrDialog{
     DefaultListModel mExtLst = new DefaultListModel();
     private JTextField txtExtPart;
     private JDialog d, dReserv;
+    private Date startDate, endDate;
+    private Appointment appointment;
 
     
     protected MaskFormatter createFormatter(String s, String looks) {
@@ -73,7 +78,10 @@ public class ArrDialog{
 		
 		//final JDialog
 		d = new JDialog(frame, dialogName, true);
-		
+
+        //create appointment:
+        appointment = new Appointment();
+        appointment.addParticipant();
 
 		
 		d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -301,7 +309,7 @@ public class ArrDialog{
 	    			public void run() {
 	    				try {
 	    					//System.out.println(CalendarPanel.currentMonth);
-	    					new BookRoom(d,true,"Room Booking");
+	    					new BookRoom(d,true,"Room Booking", startDate, endDate);
 	    				} catch (Exception e) {
 	    					e.printStackTrace();
 	    				}

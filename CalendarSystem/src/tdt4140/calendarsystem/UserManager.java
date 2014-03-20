@@ -24,7 +24,7 @@ public class UserManager extends Manager {
 
 	private final ArrayList<User> users = new ArrayList<User>();
 	private final ArrayList<Group> groups = new ArrayList<Group>();
-	
+
 	private static final String TAG_GROUP = "group", TAG_USER = "user", TAG_NAME = "name",
 			TAG_USERNAME = "username", TAG_PW = "password", TAG_EMAIL = "email";
 
