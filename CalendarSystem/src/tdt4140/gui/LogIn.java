@@ -87,6 +87,9 @@ public class LogIn extends JFrame {
 	
 		btnEnter.setBounds(84, 128, 89, 23);
 		LoginPanel.add(btnEnter);
+		
+		
+		
 
 	}
 	

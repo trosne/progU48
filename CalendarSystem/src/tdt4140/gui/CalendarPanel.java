@@ -2,10 +2,10 @@ package tdt4140.gui;
 import javax.swing.*;
 import javax.swing.table.*;
 
-
-
 import java.awt.*;
 import java.awt.event.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
  
 public class CalendarPanel extends JPanel {
@@ -271,8 +271,15 @@ public class CalendarPanel extends JPanel {
     	    			JTable target = (JTable)e.getSource();
     	    			int row = tblCalendar.getSelectedRow();
     	    			int column = tblCalendar.getSelectedColumn();
-    	    			if ((tblCalendar.getValueAt(row, column))!=null)
-    	        			System.out.println(tblCalendar.getValueAt(row, column) + " " + lblMonth.getText() + " " + tblCalendar.getColumnName(column) + " " + currentYear );
+    	    			
+    	    	
+    	    			if ((tblCalendar.getValueAt(row, column))!=null){
+    	    				
+    	    				String dateCurrent = lblMonth.getText()  + " " + tblCalendar.getValueAt(row, column) +","+  " " + currentYear ;
+    	    				//System.out.println(dateCurrent);
+    	    				
+    	    				
+    	    			}
     	    		}
     	    		
     	    		else if (e.getClickCount()==1){
