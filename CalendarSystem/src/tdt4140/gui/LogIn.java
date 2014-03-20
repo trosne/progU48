@@ -10,12 +10,19 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+
+import tdt4140.calendarsystem.CalendarManager;
+import tdt4140.calendarsystem.RoomManager;
+import tdt4140.calendarsystem.UserManager;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class LogIn extends JFrame {
 	
-	
+	private UserManager _userManager;
+	private RoomManager _roomManager;
+	private CalendarManager _calendarManager;
 	private JPanel contentPane;
 	private JTextField textFUsr;
 	private JTextField textFPass;
@@ -24,27 +31,31 @@ public class LogIn extends JFrame {
 	
 	//static JPanel LoginPanel;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					LogIn frame = new LogIn();
-					frame.setVisible(true);
-					
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	/**
+//	 * Launch the application.
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					LogIn frame = new LogIn();
+//					frame.setVisible(true);
+//					
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the LogIn frame.
 	 */
-	public LogIn() {
+	public LogIn(UserManager uM, CalendarManager cM, RoomManager rM) {
+		
+		this._userManager = uM;
+		this._calendarManager = cM;
+		this._roomManager = rM;
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 291, 208);
@@ -87,20 +98,23 @@ public class LogIn extends JFrame {
 	
 		btnEnter.setBounds(84, 128, 89, 23);
 		LoginPanel.add(btnEnter);
-
 	}
 	
 	private ActionListener bl = new ActionListener() { 
 		public void actionPerformed(ActionEvent e) { 
-			
-			// Close the login window
-			setVisible(false);
-			dispose();
-			// Open the MainFrame
-			MainFrame nextFrame = new MainFrame();
-			nextFrame.setVisible(true);
-			nextFrame.setUsername(textFUsr.getText());
-	
+
+			boolean loggedIn = _userManager.login(textFUsr.getText(), textFPass.getText());
+			if (loggedIn) {
+				_roomManager.parseFromXML();
+				_calendarManager.parseFromXML();
+				// Close the login window
+				setVisible(false);
+				dispose();
+				// Open the MainFrame
+				MainFrame nextFrame = new MainFrame();
+				nextFrame.setVisible(true);
+				nextFrame.setUsername(textFUsr.getText());
+			}
 		} 
 		}; 
 }
