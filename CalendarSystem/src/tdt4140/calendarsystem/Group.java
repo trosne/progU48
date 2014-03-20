@@ -13,7 +13,14 @@ public class Group {
 	 */
 	public Group()
 	{
-		
+		users = new ArrayList<>();
+		subGroups = new ArrayList<>();
+	}
+	
+	public Group(String name) {
+		users = new ArrayList<>();
+		subGroups = new ArrayList<>();
+		this.name = name;
 	}
 	
 	public boolean addUserToGroup(User u)
@@ -40,6 +47,19 @@ public class Group {
 		}
 		
 		return false;
+	}
+	
+	public boolean addSubGroup(Group g) {
+		for(int i=0; i<subGroups.size(); i++)
+		{
+			if(subGroups.get(i).getName().equals(g.getName()))
+			{
+				return false;
+			}
+		}
+		
+		subGroups.add(g);
+		return true;
 	}
 
 	/**
