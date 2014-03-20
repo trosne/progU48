@@ -12,6 +12,9 @@ public class UserManager extends Manager {
 
 	private ArrayList<User> users;
 	private ArrayList<Group> groups;
+	
+	private static final String TAG_GROUP = "group", TAG_USER = "user", TAG_NAME = "name",
+			TAG_USERNAME = "username", TAG_PW = "password", TAG_EMAIL = "email";
 
     private static UserManager instance;
 
