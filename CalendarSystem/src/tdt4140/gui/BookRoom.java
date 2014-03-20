@@ -1,20 +1,18 @@
 package tdt4140.gui;
 
+import tdt4140.calendarsystem.Appointment;
 import tdt4140.calendarsystem.MeetingRoom;
+import tdt4140.calendarsystem.Reservation;
 import tdt4140.calendarsystem.RoomManager;
 
 import java.awt.Container;
 
-import javax.swing.JDialog;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Date;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -22,12 +20,13 @@ public class BookRoom {
 	private JDialog bookDialog;
 	static Container pane;
 	
-	public BookRoom(JDialog dialog, boolean modal, String dialogName, Date start, Date end){
+	public BookRoom(JDialog dialog, boolean modal, String dialogName, final Appointment appointment, final JTextField locationField){
 		
 		bookDialog = new JDialog(dialog, dialogName, modal);
 		bookDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		bookDialog.setBounds(1200, 100, 300, 160);
-		
+
+        final JComboBox cmbxRoom = new JComboBox();
 		pane = bookDialog.getContentPane();
 		pane.setLayout(null);
 		
@@ -52,17 +51,27 @@ public class BookRoom {
 		JButton btnBook = new JButton("Book it !");
 		btnBook.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				Main Logic Here
+
+                //if it already has a reservation:
+                if (appointment.getRes() != null)
+                    RoomManager.getInstance().removeReservation(appointment.getRes());
+
+                appointment.setRes(RoomManager.getInstance().
+                        reserveRoom(RoomManager.getInstance().getRoom((String) cmbxRoom.getSelectedItem()),
+                                appointment.getStart(), appointment.getEnd()));
+                locationField.setText(appointment.getRes().getRoom().getRoomID());
                 bookDialog.setVisible(false);
 			}
 		});
 		btnBook.setBounds(195, 75, 89, 23);
 		contentPanel.add(btnBook);
 		
-		JComboBox cmbxRoom = new JComboBox();
-		cmbxRoom.setBounds(10, 27, 89, 20);
-        ArrayList<MeetingRoom> available = RoomManager.getInstance().generateAvailableRooms(start, end);
 
+		cmbxRoom.setBounds(10, 27, 89, 20);
+        ArrayList<MeetingRoom> available = RoomManager.getInstance().
+                generateAvailableRooms(appointment.getStart(), appointment.getEnd());
+
+        //populate dropdown menu
         for (int i = 0; i < available.size(); i++)
             cmbxRoom.addItem(available.get(i).getRoomID());
 

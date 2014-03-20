@@ -140,7 +140,7 @@ public class MainFrame extends JFrame {
 	    			public void run() {
 	    				try {
 	    					//System.out.println(CalendarPanel.currentMonth);
-	    		    		new ArrDialog(mainFrame, true, "Appointment preferences");
+	    		    		new ArrDialog(mainFrame, true, "Appointment preferences", null);
 	    				} catch (Exception e) {
 	    					e.printStackTrace();
 	    				}

@@ -125,7 +125,7 @@ public class RoomManager extends Manager {
 		ArrayList<MeetingRoom> availableRooms = new ArrayList<MeetingRoom>();
 		availableRooms.addAll(rooms);
 		for (int i = 0; i < bookings.size(); i++){
-			if (checkAvailability(bookings.get(i).getRoom(), start, end) == false){
+			if (!checkAvailability(bookings.get(i).getRoom(), start, end)){
 				String bookedRoom = bookings.get(i).getRoom().getRoomID();
 				for (int j = 0; j < availableRooms.size(); j++){
 					if (availableRooms.get(j).getRoomID().equals(bookedRoom)){

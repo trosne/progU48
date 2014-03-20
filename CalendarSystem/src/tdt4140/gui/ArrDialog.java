@@ -2,7 +2,7 @@ package tdt4140.gui;
 
 
 
-import tdt4140.calendarsystem.Appointment;
+import tdt4140.calendarsystem.*;
 
 import java.awt.Container;
 import java.awt.EventQueue;
@@ -10,24 +10,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
+import java.util.ArrayList;
 import java.util.Date;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.*;
-import javax.swing.JLabel;
-import javax.swing.JFormattedTextField;
-import javax.swing.JTextField;
-import javax.swing.JList;
-import javax.swing.JComboBox;
-import javax.swing.JCheckBox;
 
 
 public class ArrDialog{
@@ -36,13 +28,15 @@ public class ArrDialog{
     static Container pane;
     private JTextField txtDescr;
     private JTextField txtLocation;
-    private JTextField txtDate;
+    private JTextField txtDateDay, txtDateMonth, txtDateYear;
     DefaultListModel mFromLst = new DefaultListModel();
     DefaultListModel mToLst = new DefaultListModel();
     DefaultListModel mExtLst = new DefaultListModel();
     private JTextField txtExtPart;
     private JDialog d, dReserv;
-    private Date startDate, endDate;
+    private JRadioButton rbNoAnswer, rbHideAppointment, rbAccepted;
+
+    //private Date startDate, endDate;
     private Appointment appointment;
 
     
@@ -62,26 +56,64 @@ public class ArrDialog{
         }
         return formatter;
     }
-    
+
+    private int formatterGetHour(String value)
+    {
+        return Integer.decode(value.substring(0, 2));
+    }
+    private int formatterGetMin(String value)
+    {
+        return Integer.decode(value.substring(3));
+    }
+
+    private String formatterToString(int hour, int min)
+    {
+        String result = "";
+        if (hour < 10)
+            result +="0";
+        result += hour + ":";
+        if (min < 10)
+            result +="0";
+        result += min;
+        return result;
+    }
     /**
 	 * Create the dialog.
 	 */
     
-	public ArrDialog(JFrame frame, boolean modal, String dialogName ) {
-		
-		
-		for (int i = 15; i >= 0; i--) {
-            mFromLst.add(0, "Source item " + i);
-        }
-		
-		
-		
-		//final JDialog
-		d = new JDialog(frame, dialogName, true);
+	public ArrDialog(JFrame frame, boolean modal, String dialogName, Appointment a) {
+
 
         //create appointment:
-        appointment = new Appointment();
-        appointment.addParticipant();
+        if (a == null)
+        {
+            a = new Appointment();
+            a.addParticipant(UserManager.getInstance().getCurrentUser());
+            a.setStart(new Date(System.currentTimeMillis()));
+            a.setEnd(new Date(System.currentTimeMillis() + 1000 * 60 * 60));//+1hr
+        }
+
+        this.appointment = a;
+
+        UserManager userManager = UserManager.getInstance();
+        ArrayList<User> users = userManager.getUsers();
+		for (int i = 0; i < users.size(); i++)
+        {
+            if (appointment.getParticipant(users.get(i)) == null)
+                mFromLst.add(0, users.get(i).getName());
+            else
+                mToLst.add(0, users.get(i).getName());
+        }
+
+        ArrayList<Group> groups = userManager.getGroups();
+        for (int i = 0; i < groups.size(); i++)
+            mFromLst.add(0, groups.get(i).getName() + " (Group)");
+
+
+
+        //final JDialog
+		d = new JDialog(frame, dialogName, true);
+
 
 		
 		d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -128,20 +160,64 @@ public class ArrDialog{
 		txtDescr.setBounds(79, 33, 212, 20);
 		contentPanel.add(txtDescr);
 		txtDescr.setColumns(10);
+
 		
-	    
-	    JFormattedTextField ftxtTStart = new JFormattedTextField(createFormatter("**:**","#####"));
+	    //TIME TEXT FIELDS:
+	    final JFormattedTextField ftxtTStart = new JFormattedTextField(createFormatter("**:**","#####"));
 		ftxtTStart.setBounds(79, 58, 91, 20);
 		contentPanel.add(ftxtTStart);
+        ftxtTStart.setValue(formatterToString(appointment.getStart().getHours(), appointment.getStart().getMinutes()));
 		
-		JFormattedTextField ftxtTEnd = new JFormattedTextField(createFormatter("**:**","#####"));
+		final JFormattedTextField ftxtTEnd = new JFormattedTextField(createFormatter("**:**","#####"));
 		ftxtTEnd.setBounds(79, 83, 91, 20);
 		contentPanel.add(ftxtTEnd);
+        ftxtTEnd.setValue(formatterToString(appointment.getEnd().getHours(), appointment.getEnd().getMinutes()));
 		
-		JFormattedTextField ftxtDur = new JFormattedTextField(createFormatter("**:**","#####"));
+		final JFormattedTextField ftxtDur = new JFormattedTextField(createFormatter("**:**","#####"));
 		ftxtDur.setBounds(79, 108, 91, 20);
 		contentPanel.add(ftxtDur);
-		
+        ftxtDur.setEditable(false);
+
+        //radiobuttons for duration and end field
+        final JRadioButton rbTEnd = new JRadioButton();
+        rbTEnd.setBounds(190, 88, 10, 10);
+        rbTEnd.setSelected(true);
+
+        final JRadioButton rbDur = new JRadioButton();
+        rbDur.setBounds(190, 113, 10, 10);
+
+        ButtonGroup timeGroup = new ButtonGroup();
+        timeGroup.add(rbTEnd);
+        timeGroup.add(rbDur);
+        contentPanel.add(rbTEnd);
+        contentPanel.add(rbDur);
+
+        rbTEnd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (rbTEnd.isSelected())
+                {
+                    ftxtTEnd.setEditable(true);
+                    ftxtDur.setEditable(false);
+                    ftxtDur.setValue("##:##");
+                    ftxtTEnd.setValue(formatterToString(appointment.getEnd().getHours(), appointment.getEnd().getMinutes()));
+                }
+            }
+        });
+
+        rbDur.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (rbDur.isSelected())
+                {
+                    ftxtTEnd.setEditable(false);
+                    ftxtDur.setEditable(true);
+                    ftxtTEnd.setValue("##:##");
+                    ftxtDur.setValue("01:00");
+                }
+            }
+        });
+
 		txtLocation = new JTextField();
 		txtLocation.setBounds(79, 133, 91, 20);
 		contentPanel.add(txtLocation);
@@ -151,6 +227,8 @@ public class ArrDialog{
 		txtDate.setEditable(false);
 		txtDate.setBounds(79, 8, 108, 20);
 		contentPanel.add(txtDate);
+        txtDate.setText(appointment.getStart().getDate() + "/" + (appointment.getStart().getMonth() + 1) + " " +
+                (1900 + appointment.getStart().getYear()));
 		txtDate.setColumns(10);
 		
 		
@@ -161,27 +239,27 @@ public class ArrDialog{
 		
 		//Create and place separate content panel for JLists to add participants 
 		JPanel pnlParticipants = new JPanel(null);
-		pnlParticipants.setBounds(10, 176, 212, 302);
+		pnlParticipants.setBounds(10, 176, 312, 302);
 		pnlParticipants.setBorder(BorderFactory.createTitledBorder("Add participants"));
 		pnlParticipants.setBackground(contentPanel.getBackground());
 		contentPanel.add(pnlParticipants);
 		
 		//Create and add Labels for participant's fields
 		JLabel lblGroupsusers = new JLabel("Internal groups/users");
-		lblGroupsusers.setBounds(10, 29, 119, 14);
+		lblGroupsusers.setBounds(10, 29, 219, 14);
 		pnlParticipants.add(lblGroupsusers);
 		
 		JLabel lblParticipants = new JLabel("Internal participants");
-		lblParticipants.setBounds(10, 112, 106, 14);
+		lblParticipants.setBounds(10, 112, 206, 14);
 		pnlParticipants.add(lblParticipants);
 		
 		JLabel lblExtParticipants = new JLabel("External participants");
-		lblExtParticipants.setBounds(10, 194, 119, 14);
+		lblExtParticipants.setBounds(10, 194, 219, 14);
 		pnlParticipants.add(lblExtParticipants);
 		
 		//Create JList lstFrom (JList populated from model - populated on top) - source data for user groups and users 
 		JList lstFrom = new JList(mFromLst);
-		lstFrom.setBounds(10, 21, 192, 83);
+		lstFrom.setBounds(10, 21, 292, 83);
 		lstFrom.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		lstFrom.setPrototypeCellValue("Group name ##");
 	
@@ -202,12 +280,12 @@ public class ArrDialog{
 		
 		//Create and add scroller as JList-lstFrom container
 		JScrollPane sp = new JScrollPane(lstFrom);
-		sp.setBounds(10, 43, 192, 58);
+		sp.setBounds(10, 43, 292, 58);
 		pnlParticipants.add(sp);
 		
 		//Create  JList lstTo, populated manually with values from the JList above - used to save info about participants
 		JList lstTo = new JList(mToLst);
-		lstTo.setBounds(10, 118, 192, 80);
+		lstTo.setBounds(10, 118, 292, 80);
 		lstTo.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		lstTo.setPrototypeCellValue("Group name ##");
 		
@@ -229,12 +307,12 @@ public class ArrDialog{
 		
 		//Create and add scroller as JList-lstTo container
 		JScrollPane sp2 = new JScrollPane(lstTo);
-		sp2.setBounds(10, 125, 192, 58);
+		sp2.setBounds(10, 125, 292, 58);
 		pnlParticipants.add(sp2);
 		
 		//Create JList with external participants
 		JList lstExt = new JList(mExtLst);
-		lstExt.setBounds(10, 233, 192, 58);
+		lstExt.setBounds(10, 233, 292, 58);
 		lstExt.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		lstExt.setPrototypeCellValue("email length ##");
 		
@@ -256,7 +334,7 @@ public class ArrDialog{
 		
 		//Create and add scroller as JList-lstExt container
 		JScrollPane sp3 = new JScrollPane(lstExt);
-		sp3.setBounds(10, 233, 192, 58);
+		sp3.setBounds(10, 233, 292, 58);
 		pnlParticipants.add(sp3);
 		
 		
@@ -264,7 +342,7 @@ public class ArrDialog{
 		
 		txtExtPart = new JTextField();
 		txtExtPart.setToolTipText("Enter email");
-		txtExtPart.setBounds(10, 208, 119, 20);
+		txtExtPart.setBounds(10, 208, 219, 20);
 		pnlParticipants.add(txtExtPart);
 		txtExtPart.setColumns(10);
 		
@@ -279,7 +357,7 @@ public class ArrDialog{
 				
 			}
 		});
-		btnAddEmail.setBounds(140, 207, 62, 23);
+		btnAddEmail.setBounds(240, 207, 62, 23);
 		pnlParticipants.add(btnAddEmail);
 		
 		
@@ -309,7 +387,8 @@ public class ArrDialog{
 	    			public void run() {
 	    				try {
 	    					//System.out.println(CalendarPanel.currentMonth);
-	    					new BookRoom(d,true,"Room Booking", startDate, endDate);
+	    					new BookRoom(d,true,"Room Booking", appointment, txtLocation);
+
 	    				} catch (Exception e) {
 	    					e.printStackTrace();
 	    				}
@@ -321,14 +400,28 @@ public class ArrDialog{
 		});
 		btnBookARoom.setBounds(180, 132, 111, 23);
 		contentPanel.add(btnBookARoom);
-		
-		JCheckBox chckbxHideAppointment = new JCheckBox("Hide appointment");
-		chckbxHideAppointment.setBounds(354, 380, 117, 23);
-		contentPanel.add(chckbxHideAppointment);
-		
-		JCheckBox chckbxAccepted = new JCheckBox("Accepted");
-		chckbxAccepted.setBounds(354, 354, 97, 23);
-		contentPanel.add(chckbxAccepted);
+
+        //status for response
+        if (appointment.getParticipants().get(0).getaUser() != UserManager.getInstance().getCurrentUser())//not creator
+        {
+            rbNoAnswer = new JRadioButton(Participant.STATUS_NOT_RESPONDED);
+            rbNoAnswer.setBounds(254, 380, 217, 23);
+            contentPanel.add(rbNoAnswer);
+            rbNoAnswer.setSelected(true);
+
+            rbHideAppointment = new JRadioButton(Participant.STATUS_DECLINED);
+            rbHideAppointment.setBounds(254, 380, 217, 23);
+            contentPanel.add(rbHideAppointment);
+
+            rbAccepted = new JRadioButton(Participant.STATUS_ATTENDING);
+            rbAccepted.setBounds(254, 354, 97, 23);
+            contentPanel.add(rbAccepted);
+
+            ButtonGroup statusGroup = new ButtonGroup();
+            statusGroup.add(rbNoAnswer);
+            statusGroup.add(rbHideAppointment);
+            statusGroup.add(rbAccepted);
+        }
 
 
 		

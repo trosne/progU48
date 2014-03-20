@@ -55,12 +55,15 @@ public class Appointment {
 	 */
 	public void addParticipant(User x)
 	{
-        Participant p = new Participant(x);
+        if (getParticipant(x) == null)
+        {
+            Participant p = new Participant(x);
 
-        if (participants.size() == 0)
-            p.setStatus(Participant.STATUS_CREATOR);
+            if (participants.size() == 0)
+                p.setStatus(Participant.STATUS_CREATOR);
 
-		participants.add(p);
+            participants.add(p);
+        }
 	}
 
     /**
@@ -132,6 +135,15 @@ public class Appointment {
 	public void setParticipants(ArrayList<Participant> participants) {
 		this.participants = participants;
 	}
+
+    public Participant getParticipant(User user)
+    {
+        for (int i = 0; i < participants.size(); i++)
+            if (participants.get(i).getaUser() == user)
+                return participants.get(i);
+
+        return null;
+    }
 
 	/**
 	 * @return the extParticipants
