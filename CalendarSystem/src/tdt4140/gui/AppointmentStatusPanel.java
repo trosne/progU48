@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class AppointmentStatusPanel extends JPanel {
 
     private Appointment mAppointment;
-    private JRadioButton rbAccept, rbDecline, rbNoAnswer;
+    private JRadioButton rbAccept, rbDecline, rbNoAnswer, rbHide;
     private User mUser;
 
     private class StatusEntry
@@ -29,13 +29,14 @@ public class AppointmentStatusPanel extends JPanel {
 
     public AppointmentStatusPanel(JPanel contentPanel, Appointment appointment)
     {
+        super(null);
         if (appointment != mAppointment)
             statusEntries = new ArrayList<>();
         mAppointment = appointment;
 
-        final int STATUS_LEFT_POS = 340;
+        final int STATUS_LEFT_POS = 10;
         //Create and place separate content panel for JLists to add participants
-        this.setBounds(STATUS_LEFT_POS - 10, 186, 230, 120);
+        this.setBounds(330, 186, 230, 120);
         this.setBorder(BorderFactory
                 .createTitledBorder("Set status for " + UserManager.getInstance().getCurrentUser().getName()));
         this.setBackground(contentPanel.getBackground());
@@ -43,28 +44,33 @@ public class AppointmentStatusPanel extends JPanel {
 
 
         rbNoAnswer = new JRadioButton(Participant.STATUS_NOT_RESPONDED);
-        rbNoAnswer.setBounds(STATUS_LEFT_POS, 200, 217, 23);
+        rbNoAnswer.setBounds(STATUS_LEFT_POS, 20, 217, 23);
         this.add(rbNoAnswer);
         rbNoAnswer.setSelected(true);
 
         rbDecline = new JRadioButton(Participant.STATUS_DECLINED);
-        rbDecline.setBounds(STATUS_LEFT_POS, 240, 217, 23);
+        rbDecline.setBounds(STATUS_LEFT_POS, 40, 217, 23);
         this.add(rbDecline);
 
 
         rbAccept = new JRadioButton(Participant.STATUS_ATTENDING);
-        rbAccept.setBounds(STATUS_LEFT_POS, 280, 97, 23);
+        rbAccept.setBounds(STATUS_LEFT_POS, 60, 217, 23);
         this.add(rbAccept);
+
+
+        rbHide = new JRadioButton(Participant.STATUS_HIDDEN);
+        rbHide.setBounds(STATUS_LEFT_POS, 80, 217, 23);
+        this.add(rbHide);
 
         ButtonGroup statusGroup = new ButtonGroup();
         statusGroup.add(rbNoAnswer);
         statusGroup.add(rbDecline);
         statusGroup.add(rbAccept);
+        statusGroup.add(rbHide);
 
         rbNoAnswer.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                setStatus(Participant.STATUS_NOT_RESPONDED);
+            public void actionPerformed(ActionEvent actionEvent) {setStatus(Participant.STATUS_NOT_RESPONDED);
             }
         });
 
@@ -79,6 +85,13 @@ public class AppointmentStatusPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 setStatus(Participant.STATUS_ATTENDING);
+            }
+        });
+
+        rbHide.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                setStatus(Participant.STATUS_HIDDEN);
             }
         });
 
@@ -141,6 +154,7 @@ public class AppointmentStatusPanel extends JPanel {
             rbAccept.setEnabled(false);
             rbDecline.setEnabled(false);
             rbNoAnswer.setEnabled(false);
+            rbHide.setEnabled(false);
 
             this.setBorder(BorderFactory
                     .createTitledBorder("Status not changeable"));
@@ -150,10 +164,12 @@ public class AppointmentStatusPanel extends JPanel {
             rbAccept.setEnabled(true);
             rbDecline.setEnabled(true);
             rbNoAnswer.setEnabled(true);
+            rbHide.setEnabled(true);
 
             rbAccept.setSelected(false);
             rbDecline.setSelected(false);
             rbNoAnswer.setSelected(false);
+            rbHide.setSelected(false);
 
             if (hasEntry(user))
             {
@@ -168,9 +184,12 @@ public class AppointmentStatusPanel extends JPanel {
                     case Participant.STATUS_NOT_RESPONDED:
                         rbNoAnswer.setSelected(true);
                         break;
+                    case Participant.STATUS_HIDDEN:
+                        rbHide.setSelected(true);
+                        break;
 
                 }
-                
+
             }
             else if (mAppointment.getParticipant(mUser) != null)
             {
@@ -185,7 +204,9 @@ public class AppointmentStatusPanel extends JPanel {
                     case Participant.STATUS_NOT_RESPONDED:
                         rbNoAnswer.setSelected(true);
                         break;
-
+                    case Participant.STATUS_HIDDEN:
+                        rbHide.setSelected(true);
+                        break;
                 }
             }
             else
