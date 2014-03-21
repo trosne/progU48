@@ -9,7 +9,7 @@ public class Participant {
      * Default values for status. Should be used every time.
      */
     public static final String STATUS_NOT_RESPONDED = "Not responded", STATUS_ATTENDING = "Attending",
-            STATUS_DECLINED = "Declined", STATUS_CREATOR = "Creator";
+            STATUS_DECLINED = "Declined", STATUS_CREATOR = "Creator", STATUS_HIDDEN = "Hide appointment";
 	
 	/**
 	 * Default constructor

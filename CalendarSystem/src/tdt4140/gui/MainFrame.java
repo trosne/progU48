@@ -32,6 +32,7 @@ public class MainFrame extends JFrame {
 	private static CalendarManager _calendarManager;
 	
 	private JPanel contentPane;
+    private static UserListPanel userListPanel;
 	private static CalendarPanel calendarPanel;
 	static MainFrame mainFrame; 
 	static JTable tblArrange;
@@ -65,7 +66,9 @@ public class MainFrame extends JFrame {
 		this._userManager = UserManager.getInstance();
 		this._calendarManager = CalendarManager.getInstance();
 		this._roomManager = RoomManager.getInstance();
-		
+
+
+
 		//Mainframe properties
 		
 		setTitle("Main calendar window");
@@ -90,7 +93,6 @@ public class MainFrame extends JFrame {
 		ArrPanel.setBorder(BorderFactory.createTitledBorder("Appointments"));
 		ArrPanel.setBackground(contentPane.getBackground());
 		contentPane.add(ArrPanel);
-
 		
 		// New table model with non-editable cells
 		mtblArrange = new DefaultTableModel(){
@@ -186,7 +188,10 @@ public class MainFrame extends JFrame {
                 }
             }
         });
-        
+
+
+        //add new panel for user calendars:
+        userListPanel = new UserListPanel(contentPane);
         
         //Set MainFrame visible
         refreshAppoint();
@@ -257,13 +262,16 @@ public class MainFrame extends JFrame {
 		currCal.set(Integer.parseInt(dateStrings[2]), Integer.parseInt(dateStrings[1]), Integer.parseInt(dateStrings[0]));
 
 		for (Appointment appointment : _calendarManager.getAppointments()) {
+            if (appointment == null)
+                continue;
 			Calendar appCalS = new GregorianCalendar();
 			Calendar appCalE = new GregorianCalendar();
             appCalS.setTime(appointment.getStart());
             appCalE.setTime(appointment.getEnd());
 	
 			if (appCalS.get(Calendar.YEAR) == currCal.get(Calendar.YEAR) && appCalS.get(Calendar.MONTH)+1 == 
-					currCal.get(Calendar.MONTH) && appCalS.get(Calendar.DAY_OF_MONTH) == currCal.get(Calendar.DAY_OF_MONTH)) {
+					currCal.get(Calendar.MONTH) && appCalS.get(Calendar.DAY_OF_MONTH) == currCal.get(Calendar.DAY_OF_MONTH)
+                    && userListPanel.isActive(appointment)) {
 				
 				Vector row = new Vector();
 				String appDate = appCalS.get(Calendar.DATE) + "." + (appCalS.get(Calendar.MONTH)+1) + "." + appCalS.get(Calendar.YEAR);
