@@ -15,10 +15,7 @@ import java.beans.PropertyVetoException;
 import java.beans.VetoableChangeListener;
 import java.lang.reflect.Array;
 import java.text.DateFormatSymbols;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -43,6 +40,7 @@ public class ArrDialog{
     private JRadioButton rbDur, rbTEnd;
     private JFormattedTextField ftxtTStart, ftxtTEnd, ftxtDur;
     private boolean endUseDuration;
+    private boolean isChange;
 
     //private Date startDate, endDate;
     private Appointment appointment;
@@ -99,7 +97,10 @@ public class ArrDialog{
             a.addParticipant(UserManager.getInstance().getCurrentUser());
             a.setStart(new Date(System.currentTimeMillis()));
             a.setEnd(new Date(System.currentTimeMillis() + 1000 * 60 * 60));//+1hr
+            isChange = false;
         }
+        else
+            isChange = true;
 
         this.appointment = a;
 
@@ -123,6 +124,7 @@ public class ArrDialog{
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 autoUpdateBooking();
+
             }
         };
 
@@ -255,12 +257,16 @@ public class ArrDialog{
         // Date picking:
 
         //day
-        Integer[] days = new Integer[31];
-        for (int i = 0; i < 31; i++)
+        final int maxDay = new GregorianCalendar(appointment.getStart().getYear() + 104, appointment.getStart().getMonth(), 1)
+                .getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        Integer[] days = new Integer[maxDay];
+        for (int i = 0; i < maxDay; i++)
             days[i] = i + 1;
         cmbDay = new JComboBox<>(days);
         cmbDay.setBounds(79, 8, 60, 20);
         contentPanel.add(cmbDay);
+        cmbDay.setSelectedIndex(appointment.getStart().getDate() - 1);
         cmbDay.addActionListener(timeChangedListener);
 
         //month
@@ -269,6 +275,7 @@ public class ArrDialog{
         cmbMonth = new JComboBox<>(months);
         cmbMonth.setBounds(149, 8, 80, 20);
         contentPanel.add(cmbMonth);
+        cmbMonth.setSelectedIndex(appointment.getStart().getMonth());
         cmbMonth.addActionListener(timeChangedListener);
 
         //year
@@ -279,6 +286,7 @@ public class ArrDialog{
         cmbYear.setBounds(239, 8, 50, 20);
         contentPanel.add(cmbYear);
         cmbYear.addActionListener(timeChangedListener);
+
 
 		
 		// Create and place button to delete current arrangement
@@ -470,6 +478,17 @@ public class ArrDialog{
 
                 appointment.setExtParticipants(extPart);
 
+                if (!isChange)
+                {
+                    //TODO: Patrik: ny avtale, send mail til alle extparticipants
+                }
+                else if (rbHideAppointment.isSelected())
+                {
+
+                    //TODO: Patrik: Satt status til "not attending". Send mail om dette.
+                }
+
+
 
                 for (int i = 0; i < mToLst.size(); i++)
                 {
@@ -494,7 +513,8 @@ public class ArrDialog{
                     }
                 }
 
-                CalendarManager.getInstance().makeAppointment(appointment);
+                if (!isChange)
+                    CalendarManager.getInstance().makeAppointment(appointment);
 
                 d.setVisible(false);
             }
@@ -546,6 +566,7 @@ public class ArrDialog{
             rbHideAppointment = new JRadioButton(Participant.STATUS_DECLINED);
             rbHideAppointment.setBounds(254, 380, 217, 23);
             contentPanel.add(rbHideAppointment);
+
 
             rbAccepted = new JRadioButton(Participant.STATUS_ATTENDING);
             rbAccepted.setBounds(254, 354, 97, 23);
@@ -599,6 +620,23 @@ public class ArrDialog{
      */
     private void autoUpdateBooking()
     {
+
+        //update number of days in month:
+        int maxDays = new GregorianCalendar(cmbYear.getSelectedIndex() + 2014, cmbMonth.getSelectedIndex(), 1)
+                .getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        if (cmbDay.getItemCount() < maxDays) // not enough days
+        {
+            for (int i = cmbDay.getItemCount(); i < maxDays; i++)
+                cmbDay.addItem(i + 1);
+        }
+        else // too many days
+        {
+            for (int i = cmbDay.getItemCount() - 1; i >= maxDays; i--)
+                cmbDay.removeItemAt(i);
+
+        }
+
         updateDateFromFields();
 
         if (appointment.getRes() == null)

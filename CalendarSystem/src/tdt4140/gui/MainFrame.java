@@ -175,8 +175,17 @@ public class MainFrame extends JFrame {
         refreshAppoint();
        // mtblArrange.ad
         setVisible(true);
-        
-       
+
+        //on exit action:
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+
+            public void run() {
+                _userManager.parseToXML();
+                _calendarManager.parseToXML();
+                _roomManager.parseToXML();
+                System.out.println("Saved all managers to XML.");
+            }
+        }));
         
         
 	}

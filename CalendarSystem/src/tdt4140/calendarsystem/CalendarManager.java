@@ -49,7 +49,7 @@ public class CalendarManager extends Manager {
 	
 	public void makeAppointment(Appointment anAppointment)
 	{
-        if (getAppointment(anAppointment.getDescription()) == null)
+        if (getAppointment(anAppointment.getId()) == null)
     		appointments.add(anAppointment);
 	}
 
