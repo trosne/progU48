@@ -240,7 +240,6 @@ public class CalendarPanel extends JPanel {
 
 			setBorder(null);
 			setForeground(Color.black);
-
 			return this;
 		}
 	}
@@ -253,7 +252,7 @@ public class CalendarPanel extends JPanel {
 			} else { // Back one month
 				currentMonth -= 1;
 			}
-
+			
 			refreshCalendar(currentMonth, currentYear);
 		}
 	}
@@ -266,7 +265,6 @@ public class CalendarPanel extends JPanel {
 			} else { // Forward one month
 				currentMonth += 1;
 			}
-
 			refreshCalendar(currentMonth, currentYear);
 		}
 	}
