@@ -484,11 +484,17 @@ public class ArrDialog{
                 }
                 else if (rbHideAppointment.isSelected())
                 {
-
+                    appointment.setStatus(UserManager.getInstance().getCurrentUser(), Participant.STATUS_DECLINED);
                     //TODO: Patrik: Satt status til "not attending". Send mail om dette.
                 }
-
-
+                else if (rbAccepted.isSelected())
+                {
+                    appointment.setStatus(UserManager.getInstance().getCurrentUser(), Participant.STATUS_ATTENDING);
+                }
+                else if (rbNoAnswer.isSelected())
+                {
+                    appointment.setStatus(UserManager.getInstance().getCurrentUser(), Participant.STATUS_NOT_RESPONDED);
+                }
 
                 for (int i = 0; i < mToLst.size(); i++)
                 {

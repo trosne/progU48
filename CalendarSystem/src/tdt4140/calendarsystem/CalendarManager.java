@@ -118,7 +118,7 @@ public class CalendarManager extends Manager {
 				for (int j = 0; j < extParticipants.size(); j++)
 				{
 					ee = d.createElement(TAG_EXTPARTICIPANT);
-					ee.setAttribute(TAG_EXTPARTICIPANT, extParticipants.get(i));
+					ee.setAttribute(TAG_EXTPARTICIPANT, extParticipants.get(j));
 					e.appendChild(ee);
 				}
 

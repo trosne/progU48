@@ -8,4 +8,5 @@
     <room capacity="8" id="group room"/>
     <room capacity="1" id="toilet booth"/>
     <reservation end_date="1395348261026" id="0" room_id="shitty room" start_date="1395344661026"/>
+    <reservation end_date="1395403597717" id="1" room_id="class room" start_date="1395399997717"/>
 </roomsAndRes>

@@ -3,4 +3,9 @@
         <participant status="Creator" username="kajkaj"/>
         <participant status="Not responded" username="benben"/>
     </appointment>
+    <appointment description="jaja" end_date="1395403597717" start_date="1395399997717">
+        <participant status="Creator" username="patrikfb"/>
+        <participant status="Not responded" username="lisasteen"/>
+        <participant status="Not responded" username="vegbrat"/>
+    </appointment>
 </appointments>
