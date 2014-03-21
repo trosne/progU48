@@ -5,13 +5,13 @@
 
 package tdt4140.calendarsystem;
 
-//import com.sun.mail.smtp.SMTPTransport;
+import com.sun.mail.smtp.SMTPTransport;
 import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
-/*import javax.faces.context.FacesContext;
+import javax.faces.context.FacesContext;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -21,7 +21,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-*/
+
 /**
 *
 * @author Patrik Fridberg Bakken
@@ -120,7 +120,7 @@ public class MailHandler {
     }
 
     public void sendMail() {
-     /*   Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
+        Security.addProvider(new com.sun.net.ssl.internal.ssl.Provider());
         final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 
         // Get system properties
@@ -191,6 +191,6 @@ public class MailHandler {
             System.out.println("Sent message successfully....");
         } catch (MessagingException mex) {
             mex.printStackTrace();
-        }*/
+        }
     }
 }
