@@ -40,7 +40,7 @@ public class ArrDialog{
     private JRadioButton rbDur, rbTEnd;
     private JFormattedTextField ftxtTStart, ftxtTEnd, ftxtDur;
     private boolean endUseDuration;
-    private boolean isChange;
+    private boolean isChange, fieldsHaveChanged;
 
     //private Date startDate, endDate;
     private Appointment appointment;
@@ -89,7 +89,7 @@ public class ArrDialog{
     
 	public ArrDialog(JFrame frame, boolean modal, String dialogName, Appointment a) {
 
-
+        fieldsHaveChanged = false;
         //create appointment:
         if (a == null)
         {
@@ -126,7 +126,7 @@ public class ArrDialog{
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 autoUpdateBooking();
-
+                fieldsHaveChanged = true;
             }
         };
 
@@ -251,7 +251,12 @@ public class ArrDialog{
 		txtLocation = new JTextField();
 		txtLocation.setBounds(79, 133, 91, 20);
 		contentPanel.add(txtLocation);
-
+        txtLocation.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                fieldsHaveChanged = true;
+            }
+        });
 
         txtReservation = new JTextField();
         txtReservation.setBounds(79, 158, 91, 20);
@@ -560,6 +565,7 @@ public class ArrDialog{
                     txtLocation.setText("");
                     txtLocation.setEditable(true);
                 }
+                fieldsHaveChanged = true;
 				
 			}
 		});
