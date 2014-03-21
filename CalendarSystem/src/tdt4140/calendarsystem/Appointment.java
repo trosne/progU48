@@ -60,10 +60,11 @@ public class Appointment {
 						mh.setContent("Someone has declined your meeting on " + date + ":</br></br>"
 								+ "&nbsp;&nbsp;&nbsp;&nbsp;" + aUser.getName());
 						for (Participant participant : participants) {
-							if (!participant.getaUser().isEqual(aUser))
+							if (!participant.getaUser().isEqual(aUser)) {
 								mh.setRecipient(participant.getaUser().getEmail());
+								mh.sendMail();
+							}
 						}
-						mh.sendMail();
 					} catch (Exception e) {
 						System.out.println(e.getMessage());
 					}

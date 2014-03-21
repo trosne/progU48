@@ -487,14 +487,9 @@ public class ArrDialog{
 
                 appointment.setExtParticipants(extPart);
 
-                if (!isChange)
-                {
-                    //TODO: Patrik: ny avtale, send mail til alle extparticipants
-                }
-                else if (rbHideAppointment.isSelected())
+                if (rbHideAppointment.isSelected())
                 {
                     appointment.setStatus(UserManager.getInstance().getCurrentUser(), Participant.STATUS_DECLINED);
-                    //TODO: Patrik: Satt status til "not attending". Send mail om dette.
                 }
                 else if (rbAccepted.isSelected())
                 {
@@ -530,6 +525,66 @@ public class ArrDialog{
 
                 if (!isChange)
                     CalendarManager.getInstance().makeAppointment(appointment);
+                else if (fieldsHaveChanged) {
+                	try {
+						MailHandler mh = new MailHandler();
+						Calendar cal = GregorianCalendar.getInstance();
+						cal.setTime(appointment.getStart());
+						String date = cal.get(Calendar.DATE) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR);
+						mh.setSubject("APPOINTMENT ON " + date + " IS CHANGED");
+						mh.setContent("Something in the appointment on " + date + " has changed and needs your attention.</br>"
+								+ "Please log in to the calendar system and check it out.");
+						for (Participant participant : appointment.getParticipants()) {
+							mh.setRecipient(participant.getaUser().getEmail());
+							mh.sendMail();
+						}
+					} catch (Exception ex) {
+						System.out.println(ex.getMessage());
+					}
+                }
+                
+                if (!appointment.getExtParticipants().isEmpty()) {
+                	try {
+						MailHandler mh = new MailHandler();
+						Calendar calS = GregorianCalendar.getInstance();
+						calS.setTime(appointment.getStart());
+						Calendar calE = GregorianCalendar.getInstance();
+						calE.setTime(appointment.getEnd());
+						
+						String date = calS.get(Calendar.DATE) + "/" + calS.get(Calendar.MONTH) + "/" + calS.get(Calendar.YEAR);
+						String start = null;
+						if (calS.get(Calendar.MINUTE) < 10)
+							start = calS.get(Calendar.HOUR_OF_DAY) + ":0" + calS.get(Calendar.MINUTE);
+						else
+							start = calS.get(Calendar.HOUR_OF_DAY) + ":" + calS.get(Calendar.MINUTE);
+						
+						String end = null;
+						if (calE.get(Calendar.MINUTE) < 10)
+							end = calE.get(Calendar.HOUR_OF_DAY) + ":0" + calE.get(Calendar.MINUTE);
+						else
+							end = calE.get(Calendar.HOUR_OF_DAY) + ":" + calE.get(Calendar.MINUTE);
+						
+						String location = null;
+						if (appointment.getRes() == null)
+							location = appointment.getLocation();
+						else
+							location = appointment.getRes().getRoom().getRoomID();
+						
+						mh.setSubject("MEETING INVITATION!");
+						String content = "You have been invited to participate in a meeting on " + date + ".</br>"
+								+ "Meeting details:</br>"
+								+ "Start time - " + start + "</br>"
+								+ "End time - " + end + "</br>"
+								+ "Location - " + location;
+						mh.setContent(content);
+						for (String extParticipant : appointment.getExtParticipants()) {
+							mh.setRecipient(extParticipant);
+							mh.sendMail();
+						}
+					} catch (Exception ex) {
+						System.out.println(ex.getMessage());
+					}
+                }
 
                 MainFrame.refreshAppoint();
                 d.setVisible(false);
