@@ -2,16 +2,9 @@ package tdt4140.gui;
 
 import java.awt.EventQueue;
 
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JDialog;
 
 import tdt4140.calendarsystem.Appointment;
 import tdt4140.calendarsystem.CalendarManager;
@@ -19,8 +12,7 @@ import tdt4140.calendarsystem.Participant;
 import tdt4140.calendarsystem.RoomManager;
 import tdt4140.calendarsystem.UserManager;
 
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import java.awt.event.*;
 import java.text.DateFormat;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -98,6 +90,7 @@ public class MainFrame extends JFrame {
 		ArrPanel.setBorder(BorderFactory.createTitledBorder("Appointments"));
 		ArrPanel.setBackground(contentPane.getBackground());
 		contentPane.add(ArrPanel);
+
 		
 		// New table model with non-editable cells
 		mtblArrange = new DefaultTableModel(){
@@ -133,20 +126,20 @@ public class MainFrame extends JFrame {
 	    //Add button+label which opens appointment dialog and it to table panel
 	    JButton btnAddA = new JButton("+");
 	    btnAddA.addActionListener(new ActionListener() {
-	    	public void actionPerformed(ActionEvent arg0) {
-	    		
-	    		EventQueue.invokeLater(new Runnable() {
-	    			public void run() {
-	    				try {
-	    					//System.out.println(CalendarPanel.currentMonth);
-	    		    		new ArrDialog(mainFrame, true, "Appointment preferences", null);
-	    				} catch (Exception e) {
-	    					e.printStackTrace();
-	    				}
-	    			}
-	    		});
-	    	}
-	    });
+            public void actionPerformed(ActionEvent arg0) {
+
+                EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        try {
+                            //System.out.println(CalendarPanel.currentMonth);
+                            new ArrDialog(mainFrame, true, "Appointment preferences", null);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
 	    btnAddA.setBounds(691, 301, 89, 23);
 	    ArrPanel.add(btnAddA);
 	    
@@ -168,7 +161,32 @@ public class MainFrame extends JFrame {
         mtblArrange.setColumnCount(7);
        // mtblArrange.setRowCount(6);
         //mtblArrange.setr
-        
+        tblArrange.addMouseListener(new MouseAdapter() {
+
+            public void mousePressed(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = tblArrange.getSelectedRow();
+                    System.out.println("selected row " + index);
+                    if (index != -1) {
+                        final String descr = (String) mtblArrange.getValueAt(index, 4);
+                        if (descr == null)
+                            return;
+                        System.out.println("Selected appointment " + descr);
+                        EventQueue.invokeLater(new Runnable() {
+                            public void run() {
+                                try {
+                                    //System.out.println(CalendarPanel.currentMonth);
+                                    new ArrDialog(mainFrame, true, "Appointment preferences", _calendarManager.getAppointment(descr));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
+
+                }
+            }
+        });
         
         
         //Set MainFrame visible
@@ -212,7 +230,8 @@ public class MainFrame extends JFrame {
 		for (Appointment appointment : _calendarManager.getAppointments()) {
 			Calendar appCalS = new GregorianCalendar();
 			Calendar appCalE = new GregorianCalendar();
-			appCalS.setTime(appointment.getStart());
+            appCalS.setTime(appointment.getStart());
+            appCalE.setTime(appointment.getEnd());
 	
 			if (appCalS.get(Calendar.YEAR) == currCal.get(Calendar.YEAR) && appCalS.get(Calendar.MONTH)+1 == 
 					currCal.get(Calendar.MONTH) && appCalS.get(Calendar.DAY_OF_MONTH) == currCal.get(Calendar.DAY_OF_MONTH)) {

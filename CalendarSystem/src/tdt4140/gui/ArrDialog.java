@@ -118,6 +118,8 @@ public class ArrDialog{
         for (int i = 0; i < groups.size(); i++)
             mFromLst.add(0, groups.get(i).getName() + " (Group)");
 
+        for (String extUser : appointment.getExtParticipants())
+                mExtLst.add(0, extUser);
 
         //listener for changes in time/date
         final ActionListener timeChangedListener = new ActionListener() {
@@ -181,6 +183,8 @@ public class ArrDialog{
 		txtDescr.setBounds(79, 33, 212, 20);
 		contentPanel.add(txtDescr);
 		txtDescr.setColumns(10);
+        if (isChange)
+            txtDescr.setText(appointment.getDescription());
 
 		
 	    //TIME TEXT FIELDS:
@@ -522,6 +526,7 @@ public class ArrDialog{
                 if (!isChange)
                     CalendarManager.getInstance().makeAppointment(appointment);
 
+                MainFrame.refreshAppoint();
                 d.setVisible(false);
             }
         });

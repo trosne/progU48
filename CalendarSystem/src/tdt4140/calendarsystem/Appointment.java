@@ -49,6 +49,7 @@ public class Appointment {
 		for (int i = 0; i < participants.size(); i++) {
 			if (participants.get(i).getaUser().getUsername() == aUser.getUsername()) {
 				participants.get(i).setStatus(status);
+                break;
 			}
 		}
 	}

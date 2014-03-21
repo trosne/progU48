@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?><appointments>
     <appointment description="bollelunch" end_date="1395348261026" reservation="0" start_date="1395344661026">
         <participant status="Creator" username="kajkaj"/>
-        <participant status="Not responded" username="benben"/>
+        <participant status="Attending" username="benben"/>
     </appointment>
-    <appointment description="jaja" end_date="1395403597717" start_date="1395399997717">
+    <appointment description="jaja" end_date="1395403597717" location="" start_date="1395399997717">
+        <participant status="Creator" username="patrikfb"/>
+        <participant status="Not responded" username="lisasteen"/>
+        <participant status="Not responded" username="vegbrat"/>
+    </appointment>
+    <appointment description="jauja" end_date="1395404270019" reservation="2" start_date="1395400670019">
         <participant status="Creator" username="patrikfb"/>
         <participant status="Not responded" username="lisasteen"/>
         <participant status="Not responded" username="vegbrat"/>
