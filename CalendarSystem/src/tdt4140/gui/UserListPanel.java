@@ -58,6 +58,9 @@ public class UserListPanel extends JPanel {
             });
             this.add(entry.checkBox);
 
+            if (UserManager.getInstance().getCurrentUser() == u)
+                activeUsers.add(entry.user);
+
             userEntries.add(entry);
         }
 
