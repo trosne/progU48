@@ -36,11 +36,11 @@ public class ArrDialog{
     DefaultListModel mExtLst = new DefaultListModel();
     private JTextField txtExtPart;
     private JDialog d, dReserv;
-    private JRadioButton rbNoAnswer, rbHideAppointment, rbAccepted;
     private JRadioButton rbDur, rbTEnd;
     private JFormattedTextField ftxtTStart, ftxtTEnd, ftxtDur;
     private boolean endUseDuration;
     private boolean isChange, fieldsHaveChanged;
+    private AppointmentStatusPanel pnlStatus;
 
     //private Date startDate, endDate;
     private Appointment appointment;
@@ -133,10 +133,8 @@ public class ArrDialog{
         //final JDialog
 		d = new JDialog(frame, dialogName, true);
 
-
-		
 		d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		d.setBounds(700, 100, 493, 524);
+		d.setBounds(300, 100, 570, 524);
 		
 		pane = d.getContentPane();
 		pane.setLayout(null);
@@ -144,10 +142,12 @@ public class ArrDialog{
 		//Create and set working Content Panel 
 		JPanel contentPanel = new JPanel(null);
 		pane.add(contentPanel);
-		contentPanel.setBounds(0, 0, 477, 489);
+		contentPanel.setBounds(0, 0, 677, 489);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPanel.setLayout(null);
-		
+
+        pnlStatus = new AppointmentStatusPanel(contentPanel, appointment);
+
 		//Create and place all labels on Content Panel  
 		JLabel lblNewLabel = new JLabel("Date");
 		lblNewLabel.setBounds(10, 11, 46, 14);
@@ -251,6 +251,9 @@ public class ArrDialog{
 		txtLocation = new JTextField();
 		txtLocation.setBounds(79, 133, 91, 20);
 		contentPanel.add(txtLocation);
+        if (isChange && appointment.getRes() == null)
+            txtLocation.setText(appointment.getLocation());
+
         txtLocation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -262,6 +265,8 @@ public class ArrDialog{
         txtReservation.setBounds(79, 158, 91, 20);
         contentPanel.add(txtReservation);
         txtReservation.setEditable(false);
+        if (isChange && appointment.getRes() != null)
+            txtReservation.setText(appointment.getRes().getRoom().getRoomID());
 
         // Date picking:
 
@@ -292,7 +297,7 @@ public class ArrDialog{
         for (int i = 0; i < 30; i++)
             years[i] = i + 2014;
         cmbYear = new JComboBox<>(years);
-        cmbYear.setBounds(239, 8, 50, 20);
+        cmbYear.setBounds(239, 8, 80, 20);
         contentPanel.add(cmbYear);
         cmbYear.addActionListener(timeChangedListener);
 
@@ -300,7 +305,7 @@ public class ArrDialog{
 		
 		// Create and place button to delete current arrangement
 		JButton btnNewButton = new JButton("Delete appointment");
-		btnNewButton.setBounds(305, 7, 140, 23);
+		btnNewButton.setBounds(345, 7, 200, 23);
 		contentPanel.add(btnNewButton);
 		
 		//Create and place separate content panel for JLists to add participants 
@@ -309,7 +314,7 @@ public class ArrDialog{
 		pnlParticipants.setBorder(BorderFactory.createTitledBorder("Add participants"));
 		pnlParticipants.setBackground(contentPanel.getBackground());
 		contentPanel.add(pnlParticipants);
-		
+
 		//Create and add Labels for participant's fields
 		JLabel lblGroupsusers = new JLabel("Internal groups/users");
 		lblGroupsusers.setBounds(10, 29, 219, 14);
@@ -359,15 +364,32 @@ public class ArrDialog{
 		{
 			
 		 	public void mousePressed( MouseEvent e){
-	    		if (e.getClickCount()==2){
-	    			
-	    		
-	    			JList target = (JList)e.getSource();
-	    			DefaultListModel model = (DefaultListModel)target.getModel();
-	    			int index = target.getSelectedIndex();
-                    if (index > 0)
-                        model.remove(index);
+                JList target = (JList)e.getSource();
+                DefaultListModel model = (DefaultListModel)target.getModel();
+                int index = target.getSelectedIndex();
+	    		switch (e.getClickCount()){
+                    case 2:
+                        if (index > 0)
+                        {
+                            model.remove(index);
+                            pnlStatus.setUser(null);
+                        }
+                    break;
+                    case 1:
+                        String elem = (String) mToLst.get(index);
+                        if (!elem.contains("(Group)"))
+                        {
+                            User u = UserManager.getInstance().getUserFromName(elem);
+                            if (u == null)
+                                System.out.println("[ArrDialog]: Couldnt find user " + elem + " in user manager.");
+                            else
+                                pnlStatus.setUser(u);
+                        }
+                        else
+                            pnlStatus.setUser(null);
+
 	    		}
+
 	    	}
 		});
 		
@@ -428,7 +450,7 @@ public class ArrDialog{
 		
 		// Create and add button to Cancel current appointment without save
 		JButton btnCancel = new JButton("Cancel");
-		btnCancel.setBounds(369, 455, 108, 23);
+		btnCancel.setBounds(329, 455, 208, 23);
 		contentPanel.add(btnCancel);
 			//ActionListener
 		btnCancel.addActionListener(new ActionListener() {
@@ -440,7 +462,7 @@ public class ArrDialog{
 		
 		//Create and add button to Save current appointment and exit to MainFrame
 		JButton btnSaveAndExit = new JButton("Save and exit");
-		btnSaveAndExit.setBounds(369, 432, 108, 23);
+		btnSaveAndExit.setBounds(329, 432, 208, 23);
 		contentPanel.add(btnSaveAndExit);
 
         //Exit function:
@@ -491,19 +513,8 @@ public class ArrDialog{
                 {
                     //TODO: Patrik: ny avtale, send mail til alle extparticipants
                 }
-                else if (rbHideAppointment.isSelected())
-                {
-                    appointment.setStatus(UserManager.getInstance().getCurrentUser(), Participant.STATUS_DECLINED);
-                    //TODO: Patrik: Satt status til "not attending". Send mail om dette.
-                }
-                else if (rbAccepted.isSelected())
-                {
-                    appointment.setStatus(UserManager.getInstance().getCurrentUser(), Participant.STATUS_ATTENDING);
-                }
-                else if (rbNoAnswer.isSelected())
-                {
-                    appointment.setStatus(UserManager.getInstance().getCurrentUser(), Participant.STATUS_NOT_RESPONDED);
-                }
+                else
+                    pnlStatus.finalize();
 
                 for (int i = 0; i < mToLst.size(); i++)
                 {
@@ -572,28 +583,10 @@ public class ArrDialog{
 		btnBookARoom.setBounds(180, 157, 111, 23);
 		contentPanel.add(btnBookARoom);
 
+
+
+
         //status for response
-        if (appointment.getParticipants().get(0).getaUser() != UserManager.getInstance().getCurrentUser())//not creator
-        {
-            rbNoAnswer = new JRadioButton(Participant.STATUS_NOT_RESPONDED);
-            rbNoAnswer.setBounds(254, 380, 217, 23);
-            contentPanel.add(rbNoAnswer);
-            rbNoAnswer.setSelected(true);
-
-            rbHideAppointment = new JRadioButton(Participant.STATUS_DECLINED);
-            rbHideAppointment.setBounds(254, 380, 217, 23);
-            contentPanel.add(rbHideAppointment);
-
-
-            rbAccepted = new JRadioButton(Participant.STATUS_ATTENDING);
-            rbAccepted.setBounds(254, 354, 97, 23);
-            contentPanel.add(rbAccepted);
-
-            ButtonGroup statusGroup = new ButtonGroup();
-            statusGroup.add(rbNoAnswer);
-            statusGroup.add(rbHideAppointment);
-            statusGroup.add(rbAccepted);
-        }
 
 
 		
