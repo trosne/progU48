@@ -81,6 +81,8 @@ public class AppointmentStatusPanel extends JPanel {
             }
         });
 
+        setUser(UserManager.getInstance().getCurrentUser());
+
     }
 
     private void setStatus(String status)
