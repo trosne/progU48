@@ -160,7 +160,6 @@ public class MainFrame extends JFrame {
         
         mtblArrange.setColumnCount(7);
        // mtblArrange.setRowCount(6);
-        //mtblArrange.setr
         tblArrange.addMouseListener(new MouseAdapter() {
 
             public void mousePressed(MouseEvent e) {
@@ -191,7 +190,6 @@ public class MainFrame extends JFrame {
         
         //Set MainFrame visible
         refreshAppoint();
-       // mtblArrange.ad
         setVisible(true);
 
         //on exit action:
@@ -215,6 +213,7 @@ public class MainFrame extends JFrame {
 		String date = calendarPanel.getCurrentDate();
 		Calendar currCal = GregorianCalendar.getInstance();
 		String[] dateStrings = date.split("/");
+		dateStrings[1] = Integer.toString(calendarPanel.getMonth());
 		currCal.set(Integer.parseInt(dateStrings[2]), Integer.parseInt(dateStrings[1]), Integer.parseInt(dateStrings[0]));
 
 		for (Appointment appointment : _calendarManager.getAppointments()) {

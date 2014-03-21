@@ -50,12 +50,12 @@ public class Appointment {
 	{
 		for (int i = 0; i < participants.size(); i++) {
 			if (participants.get(i).getaUser().getUsername().equals(aUser.getUsername())) {
-				if (participants.get(i).getStatus().equals(Participant.STATUS_DECLINED) && status.equals(Participant.STATUS_DECLINED)) {
+				if (!(participants.get(i).getStatus().equals(Participant.STATUS_DECLINED)) && status.equals(Participant.STATUS_DECLINED)) {
 					try {
 						MailHandler mh = new MailHandler();
 						Calendar cal = GregorianCalendar.getInstance();
 						cal.setTime(this.start);
-						String date = cal.get(Calendar.DATE) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR);
+						String date = cal.get(Calendar.DATE) + "/" + (cal.get(Calendar.MONTH)+1) + "/" + cal.get(Calendar.YEAR);
 						mh.setSubject("STATUS CHANGE FOR APPOINTMENT ON " + date);
 						mh.setContent("Someone has declined your meeting on " + date + ":</br></br>"
 								+ "&nbsp;&nbsp;&nbsp;&nbsp;" + aUser.getName());
