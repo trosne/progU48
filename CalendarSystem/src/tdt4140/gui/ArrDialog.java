@@ -41,6 +41,7 @@ public class ArrDialog{
     private boolean endUseDuration;
     private boolean isChange, fieldsHaveChanged;
     private AppointmentStatusPanel pnlStatus;
+    private JComboBox<String> cmbAlarm;
 
     //private Date startDate, endDate;
     private Appointment appointment;
@@ -646,6 +647,7 @@ public class ArrDialog{
 					}
                 }
 
+                appointment.setAlarmFromPredefs(cmbAlarm.getSelectedIndex());
                 MainFrame.refreshAppoint();
                 d.setVisible(false);
             }
@@ -687,14 +689,12 @@ public class ArrDialog{
 		btnBookARoom.setBounds(180, 157, 111, 23);
 		contentPanel.add(btnBookARoom);
 
+        //alarm button:
+        String[] alarmTimes = new String[]{"No alarm", "1 minute", "5 minutes", "10 minutes", "30 minutes", "1 hour", "2 hours"};
+        cmbAlarm = new JComboBox<>(alarmTimes);
 
-
-
-        //status for response
-
-
-		
-
+        cmbAlarm.setBounds(330, 330, 130, 30);
+        contentPanel.add(cmbAlarm);
 		
 		
 		// Make it visible after everything is added !!!!!!
