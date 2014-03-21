@@ -18,6 +18,9 @@ public class Appointment {
 	private Reservation res; //includes room and time when a room is booked for this meeting
 
     private int id;
+
+    private static final long MINUTE = 1000*60;//minute in ms
+    private static final long[] ALARMPREDEFS = new long[]{0, 1 * MINUTE, 5 * MINUTE, 10 * MINUTE, 30 * MINUTE, 60 * MINUTE, 120 * MINUTE};
 	
 	/**
 	 * Default constructor
@@ -302,5 +305,19 @@ public class Appointment {
 		this.alarm = alarm;
 	}
 
+    /**
+     * Set alarm from list of predefined times
+     * @param predefIndex
+     */
+    public void setAlarmFromPredefs(int predefIndex)
+    {
+        if (predefIndex < 1)
+        {
+            alarm = null;
+            return;
+        }
+        alarm = new Date(start.getTime() - ALARMPREDEFS[predefIndex]);
+        System.out.println("Added alarm. Time: " + alarm.toString() + "\r\n" + "Current time: " + new Date(System.currentTimeMillis()).toString());
+    }
     
 }

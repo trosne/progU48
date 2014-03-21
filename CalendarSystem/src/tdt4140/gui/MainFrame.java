@@ -40,6 +40,8 @@ public class MainFrame extends JFrame {
     static JScrollPane stblArrange;
     static JDialog dlgArrPref;
 
+    static AlarmThread alarmThr;
+
 	
 	public void setUsername(String usr){
 		//System.out.println(usr);
@@ -207,6 +209,8 @@ public class MainFrame extends JFrame {
                 System.out.println("Saved all managers to XML.");
             }
         }));
+
+        alarmThr = new AlarmThread(this);
         
 	}
 
