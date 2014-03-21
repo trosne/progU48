@@ -118,6 +118,13 @@ public class ArrDialog{
             mFromLst.add(0, groups.get(i).getName() + " (Group)");
 
 
+        //listener for changes in time/date
+        final ActionListener timeChangedListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                autoUpdateBooking();
+            }
+        };
 
         //final JDialog
 		d = new JDialog(frame, dialogName, true);
@@ -179,16 +186,19 @@ public class ArrDialog{
 		ftxtTStart.setBounds(79, 58, 91, 20);
 		contentPanel.add(ftxtTStart);
         ftxtTStart.setValue(formatterToString(appointment.getStart().getHours(), appointment.getStart().getMinutes()));
+        ftxtTStart.addActionListener(timeChangedListener);
 		
 		ftxtTEnd = new JFormattedTextField(createFormatter("**:**","#####"));
 		ftxtTEnd.setBounds(79, 83, 91, 20);
 		contentPanel.add(ftxtTEnd);
         ftxtTEnd.setValue(formatterToString(appointment.getEnd().getHours(), appointment.getEnd().getMinutes()));
+        ftxtTEnd.addActionListener(timeChangedListener);
 		
 		ftxtDur = new JFormattedTextField(createFormatter("**:**","#####"));
 		ftxtDur.setBounds(79, 108, 91, 20);
 		contentPanel.add(ftxtDur);
         ftxtDur.setEditable(false);
+        ftxtDur.addActionListener(timeChangedListener);
 
         //radiobuttons for duration and end field
         rbTEnd = new JRadioButton();
@@ -251,6 +261,7 @@ public class ArrDialog{
         cmbDay = new JComboBox<>(days);
         cmbDay.setBounds(79, 8, 60, 20);
         contentPanel.add(cmbDay);
+        cmbDay.addActionListener(timeChangedListener);
 
         //month
         String[] months = new DateFormatSymbols(Locale.ENGLISH).getMonths();
@@ -258,6 +269,7 @@ public class ArrDialog{
         cmbMonth = new JComboBox<>(months);
         cmbMonth.setBounds(149, 8, 80, 20);
         contentPanel.add(cmbMonth);
+        cmbMonth.addActionListener(timeChangedListener);
 
         //year
         Integer[] years = new Integer[30];
@@ -266,6 +278,7 @@ public class ArrDialog{
         cmbYear = new JComboBox<>(years);
         cmbYear.setBounds(239, 8, 50, 20);
         contentPanel.add(cmbYear);
+        cmbYear.addActionListener(timeChangedListener);
 
 		
 		// Create and place button to delete current arrangement
@@ -577,5 +590,34 @@ public class ArrDialog{
             endDate.setMinutes(formatterGetMin((String) ftxtTEnd.getValue()));
         }
 
+    }
+
+    /**
+     * Function called each time the time is changed, and a room is booked.
+     * Changes the time of the booking, and tries to reserve the room at the new time.
+     */
+    private void autoUpdateBooking()
+    {
+        updateDateFromFields();
+
+        if (appointment.getRes() == null)
+            return;
+
+        RoomManager.getInstance().removeReservation(appointment.getRes());
+        //if room is busy:
+        if (RoomManager.getInstance().generateAvailableRooms(appointment.getStart(), appointment.getEnd())
+                .contains(appointment.getRes().getRoom()))
+        {
+            appointment.setRes(RoomManager.getInstance()
+                    .reserveRoom(appointment.getRes().getRoom(), appointment.getStart(), appointment.getEnd()));
+        }
+        else
+        {
+            appointment.setRes(null);
+            btnBookARoom.setText("Book a room");
+            txtReservation.setText("");
+            txtLocation.setText("");
+            txtLocation.setEditable(true);
+        }
     }
 }

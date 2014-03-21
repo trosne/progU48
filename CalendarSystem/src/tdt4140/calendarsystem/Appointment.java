@@ -13,6 +13,8 @@ public class Appointment {
 	private Date start;
 	private Date end;
 	private Reservation res; //includes room and time when a room is booked for this meeting
+
+    private int id;
 	
 	/**
 	 * Default constructor
@@ -21,6 +23,7 @@ public class Appointment {
 	{
 		participants = new ArrayList<Participant>();
         extParticipants = new ArrayList<String>();
+        id = CalendarManager.getInstance().generateUniqueID();
 	}
 	
 	/**
@@ -33,6 +36,7 @@ public class Appointment {
 		this.location = location;
 		this.start = start;
 		this.end = end;
+        this.id = CalendarManager.getInstance().generateUniqueID();
 	}
 	
 	/**
@@ -243,6 +247,14 @@ public class Appointment {
             return false;
 
     }
-	
-	
+
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 }

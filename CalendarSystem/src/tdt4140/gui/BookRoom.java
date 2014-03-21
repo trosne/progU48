@@ -87,7 +87,7 @@ public class BookRoom {
             if (available.get(i).getCap() > maxCap)
                 maxCap = available.get(i).getCap();
 
-        spCaps = new JSpinner(new SpinnerNumberModel(5, 1, maxCap, 1));
+        spCaps = new JSpinner(new SpinnerNumberModel((maxCap >= 5)? 5 : 1, 1, maxCap, 1));
         spCaps.setBounds(10, 37, 49, 20);
         spCaps.addChangeListener(new ChangeListener() {
             @Override
