@@ -55,7 +55,7 @@ public class Appointment {
 						MailHandler mh = new MailHandler();
 						Calendar cal = GregorianCalendar.getInstance();
 						cal.setTime(this.start);
-						String date = cal.get(Calendar.DATE) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR);
+						String date = cal.get(Calendar.DATE) + "/" + (cal.get(Calendar.MONTH)+1) + "/" + cal.get(Calendar.YEAR);
 						mh.setSubject("STATUS CHANGE FOR APPOINTMENT ON " + date);
 						mh.setContent("Someone has declined your meeting on " + date + ":</br></br>"
 								+ "&nbsp;&nbsp;&nbsp;&nbsp;" + aUser.getName());
