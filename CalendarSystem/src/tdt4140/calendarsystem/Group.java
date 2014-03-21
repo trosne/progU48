@@ -69,6 +69,20 @@ public class Group {
 		return users;
 	}
 
+    /**
+     * Get users from all sub groups as well as own users recursively
+     * @return all users
+     */
+    public ArrayList<User> getAllUsers()
+    {
+        ArrayList<User> result = new ArrayList<>();
+        result.addAll(users);
+        for (int i = 0; i < subGroups.size(); i++)
+            result.addAll(subGroups.get(i).getAllUsers());
+
+        return result;
+    }
+
 	/**
 	 * @param users the users to set
 	 */

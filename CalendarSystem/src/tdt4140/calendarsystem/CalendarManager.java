@@ -49,8 +49,17 @@ public class CalendarManager extends Manager {
 	
 	public void makeAppointment(Appointment anAppointment)
 	{
-		appointments.add(anAppointment);
+        if (getAppointment(anAppointment.getDescription()) == null)
+    		appointments.add(anAppointment);
 	}
+
+    public int generateUniqueID()
+    {
+        int id = -1;
+        while(getAppointment(++id) != null);
+
+        return id;
+    }
 	
 	/**
 	 * Removes an appointment from the calendar
@@ -156,7 +165,16 @@ public class CalendarManager extends Manager {
 
         return null;
     }
-	
+
+    public Appointment getAppointment(int id)
+    {
+        for (int i = 0; i < appointments.size(); i++)
+            if (appointments.get(i).getId() == id)
+                return appointments.get(i);
+
+        return null;
+    }
+
 	@Override
 	public void parseFromXML()
 	{
