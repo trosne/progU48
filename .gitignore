@@ -5,3 +5,12 @@
 /.idea
 /.metadata
 *.mf
+CalendarSystem/appointments.xml
+CalendarSystem/rooms.xml
+CalendarSystem/users.xml
+report/pt2.log
+report/top.aux
+report/top.log
+report/top.pdf
+report/top.synctex.gz
+report/top.toc
