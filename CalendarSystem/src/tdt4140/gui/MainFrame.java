@@ -196,6 +196,10 @@ public class MainFrame extends JFrame {
 	        	mtblArrange.setValueAt(null, i, j);
 	        }
 	    }
+		for (int i=0; i< mtblArrange.getRowCount(); i++){
+			mtblArrange.removeRow(i);
+		}
+		
 				
 		// Populate the appointment table
 		
@@ -209,7 +213,8 @@ public class MainFrame extends JFrame {
 			Calendar appCalS = new GregorianCalendar();
 			Calendar appCalE = new GregorianCalendar();
 			appCalS.setTime(appointment.getStart());
-			if (appCalS.get(Calendar.YEAR) == currCal.get(Calendar.YEAR) && appCalS.get(Calendar.MONTH) == 
+	
+			if (appCalS.get(Calendar.YEAR) == currCal.get(Calendar.YEAR) && appCalS.get(Calendar.MONTH)+1 == 
 					currCal.get(Calendar.MONTH) && appCalS.get(Calendar.DAY_OF_MONTH) == currCal.get(Calendar.DAY_OF_MONTH)) {
 				
 				Vector row = new Vector();
