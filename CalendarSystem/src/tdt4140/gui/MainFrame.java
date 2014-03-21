@@ -203,12 +203,10 @@ public class MainFrame extends JFrame {
             }
         }));
         
-        
 	}
 
 	public static List<String> rowsExist() {
 		List<String> where = new ArrayList<String>();
-		
 		
 		String date = calendarPanel.getCurrentDate();
 		Calendar currCal = GregorianCalendar.getInstance();
@@ -231,27 +229,22 @@ public class MainFrame extends JFrame {
 		
 		return where;
 			
-			
 	}
 
-
-	
 	public static void refreshAppoint(){
 		
-		for (int i = 0; i < mtblArrange.getRowCount(); i++) {
-	        for (int j = 0; j < mtblArrange.getColumnCount(); j++) {
-	        	mtblArrange.setValueAt(null, i, j);
-	        }
-	    }
-		for (int i=0; i< mtblArrange.getRowCount(); i++){
-			mtblArrange.removeRow(i);
-		}
+		//Delete all rows before populating new data
 		
+		if (mtblArrange.getRowCount() > 0) {
+			for (int i = mtblArrange.getRowCount() - 1; i > -1; i--) {
+				mtblArrange.removeRow(i);
+		    }
+			
+		}
 				
 		// Populate the appointment table
 		
 		String date = calendarPanel.getCurrentDate();
-		//System.out.println(date);
 		Calendar currCal = GregorianCalendar.getInstance();
 		String[] dateStrings = date.split("/");
 		currCal.set(Integer.parseInt(dateStrings[2]), Integer.parseInt(dateStrings[1]), Integer.parseInt(dateStrings[0]));
@@ -311,7 +304,6 @@ public class MainFrame extends JFrame {
 					rowData.add(status);
 					rowData.add(isParticipant);
 				}
-				
 				mtblArrange.addRow(rowData);
 			}
 		}	

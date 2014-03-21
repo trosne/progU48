@@ -288,7 +288,8 @@ public class CalendarPanel extends JPanel {
 
 		public void mousePressed(MouseEvent e) {
 			if (e.getClickCount() == 1) {
-
+				
+				
 				JTable target = (JTable) e.getSource();
 				int row = tblCalendar.getSelectedRow();
 				int column = tblCalendar.getSelectedColumn();
@@ -339,7 +340,7 @@ public class CalendarPanel extends JPanel {
 					}
 					currentDate = tblCalendar.getValueAt(row, column) + "/" + month + "/"
 							+ currentYear;
-					System.out.println(currentDate);
+					//System.out.println(currentDate);
 
 				}
 				MainFrame.refreshAppoint();
