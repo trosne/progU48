@@ -100,7 +100,8 @@ public class CalendarManager extends Manager {
                 e.setAttribute(TAG_DESC, appointment.getDescription());
                 e.setAttribute(TAG_START_DATE, Long.toString(appointment.getStart().getTime()));
                 e.setAttribute(TAG_END_DATE, Long.toString(appointment.getEnd().getTime()));
-                e.setAttribute(TAG_ALARM, Long.toString(appointment.getAlarm().getTime()));
+                if (appointment.getAlarm() != null)
+                	e.setAttribute(TAG_ALARM, Long.toString(appointment.getAlarm().getTime()));
 
 				//participants:
 				ArrayList<Participant> participants = appointment.getParticipants();
