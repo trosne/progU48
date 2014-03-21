@@ -330,13 +330,14 @@ public class ArrDialog{
                             }
                         }
 
-                        System.out.println("Appointment deleted. Emails sent.");
-                        MainFrame.refreshAppoint();
-                        d.setVisible(false);
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
                 }
+
+                System.out.println("Appointment deleted. Emails sent.");
+                MainFrame.refreshAppoint();
+                d.setVisible(false);
             }
         });
 		
