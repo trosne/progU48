@@ -27,7 +27,7 @@ public class CalendarManager extends Manager {
     private static final String TAG_APPOINTMENT = "appointment", TAG_DESC = "description",
             TAG_PARTICIPANT = "participant", TAG_PARTICIPANT_NAME = "username", TAG_PARTICIPANT_STATUS = "status",
             TAG_EXTPARTICIPANT = "extparticipant", TAG_LOCATION = "location", TAG_RESERVATION = "reservation",
-            TAG_START_DATE = "start_date", TAG_END_DATE = "end_date";
+            TAG_START_DATE = "start_date", TAG_END_DATE = "end_date", TAG_ALARM = "alarm";
 
     private static CalendarManager instance;
 
@@ -100,6 +100,7 @@ public class CalendarManager extends Manager {
                 e.setAttribute(TAG_DESC, appointment.getDescription());
                 e.setAttribute(TAG_START_DATE, Long.toString(appointment.getStart().getTime()));
                 e.setAttribute(TAG_END_DATE, Long.toString(appointment.getEnd().getTime()));
+                e.setAttribute(TAG_ALARM, Long.toString(appointment.getAlarm().getTime()));
 
 				//participants:
 				ArrayList<Participant> participants = appointment.getParticipants();
@@ -211,6 +212,8 @@ public class CalendarManager extends Manager {
                         appointmentObj.setStart(new Date(Long.decode(node.getNodeValue())));
                     else if (node.getNodeName().equals(TAG_END_DATE))
                         appointmentObj.setEnd(new Date(Long.decode(node.getNodeValue())));
+                    else if (node.getNodeName().equals(TAG_ALARM))
+                    	appointmentObj.setAlarm(new Date(Long.decode(node.getNodeValue())));
 
                 }
                 for (int j = 0; j < subElements.getLength(); j++)

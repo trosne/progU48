@@ -1,74 +1,88 @@
 \section{Test results}
-In this section we will give the results from the tests specified in PU2. The test ID from PU2 corresponds to the subsections given here. This section will only note a test as either pass or fail, and will not dwell further into the reasons for neither. This reasoning will instead be given in the changes section following this one where necessary. For details regarding the tests we refer to our documentation given in PU2.
+In this section we will give the results from the tests specified in PU2. The test ID from PU2 corresponds to the subsections given here. Since we have tested all our code while implementing (i.e. unit testing), we are happy to see that almost all the test cases passed on the first try when going through the test plan. For details regarding the tests we refer to our documentation given in PU2.
 \subsection{Test 1}
 Test item: Logging in
 
-Result: Pass - User is logged in with correct password and can see calendars. Is not logged in with wrong password.
+Result: \\Pass - User is logged in with correct password and can see calendars. Is not logged in with wrong password.
 
 \subsection{Test 2}
 Test item: Basic appointment planning
 
-Result:
+Result: \\Pass - New appointment is created and visible in calendar to self and other users
 
 \subsection{Test 3}
 Test item: Manage appointment participants
 
-Result: 
+Result: \\1st try fail - Participants are not removed\\
+2nd try pass - Participants are added, removed and can accept/decline appointment\\
 
 \subsection{Test 4}
 Test item: Appointment modification
 
-Result:
+Result: \\Pass - All changes are saved and visible in application. Info messages are sent via email.
 
 \subsection{Test 5}
 Test item: Delete appointment
 
-Result:
+Result: \\Pass - Appointment is deleted and is never shown in calendar again. Emails are sent to all participants.
 
 \subsection{Test 6}
 Test item: Room reservation
 
-Result:
+Result: \\ Pass - Room is successfully reserved
 
 \subsection{Test 7}
 Test item: Display 1 (appointment status)
 
-Result:
+Result: \\Pass - Change is visible and statuses are updated successfully as well as clearly visible
 
 \subsection{Test 8}
 Test item: Status for participation
 
-Result:
+Result: \\Pass - List of participants are visible to everyone invited and their statuses are shown.
 
 \subsection{Test 9}
 Test item: Decline meeting invitation
 
-Result:
+Result: \\Pass - All participants are notified via email when a user declines a meeting. A user can also delete himself as a participant.
 
 \subsection{Test 10}
 Test item: Room reservation cancelling
 
-Result:
+Result: \\Pass - A list of available rooms are automatically generated and user chooses which one to book. When the meeting is deleted later, the reservation is lifted and another user can book the room at that time.
 
 \subsection{Test 11}
 Test item: Display 2 (the calendar)
 
-Result:
+Result: \\Pass - A clean calendar is shown with meetings shown on the appropriate days. Pressing next/previous successfully goes to the next/previous. We have a whole month instead of just a week to make it simpler for the user.
 
 \subsection{Test 12}
 Test item: Tracking participants
 
-Result:
+Result: \\Pass - When participants change their statuses to "declined", "attending" or ignores it, these are shown in the list when entering an appointment with the names displayed.
 
 \subsection{Test 13}
 Test item: Multi-calendar display
 
-Result:
+Result: \\TODO: implement
 
 \subsection{Test 14}
 Test item: Alarm
 
-Result:
+Result: \\1st try fail - We have overlooked this while implementing.\\
+2nd try pass - Users can put in alarms and will get a message via email. Since this application is not running continually on a server, this will only happen when application is running.
+
 %----------------------------------------------------------------------------
 \section{Changes}
+\subsection{Test 3}
+Change after 1st try: Fixed a mixup in the lists that shows the participants and the back bone list that holds the current participants.\\
+Messages are not included here as the specification does not mention it in requirement 3.\\
+A mail is however sent to external participants as the new requirement says it should
 
+\subsection{Test 14}
+Change after 1st try: Implemented possibility of putting in alarms
+
+\subsection{Other changes to design}
+1. We decided to move the save/read file from the abstract class Manager to the implemented parsing methods in the respective Managers (i.e. UserManager, CalendarManager and RoomManager). This to make the parse coding simpler.\\
+\\
+2. When implementing we found need of several getters and setters for information from classes other than the one we were working in. These are not the simple getters and setters, but more complex ones like getting a user from UserManager through the ArrayList of User objects. Other than these we have also implemented methods for equality to make the code cleaner and simpler to implement (i.e. checking equality of two User objects).

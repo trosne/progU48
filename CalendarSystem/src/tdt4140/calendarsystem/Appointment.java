@@ -14,6 +14,7 @@ public class Appointment {
 	private String location;
 	private Date start;
 	private Date end;
+	private Date alarm;
 	private Reservation res; //includes room and time when a room is booked for this meeting
 
     private int id;
@@ -279,7 +280,6 @@ public class Appointment {
 
     }
 
-
     public int getId() {
         return id;
     }
@@ -288,4 +288,19 @@ public class Appointment {
         this.id = id;
     }
 
+	/**
+	 * @return the alarm
+	 */
+	public Date getAlarm() {
+		return alarm;
+	}
+
+	/**
+	 * @param alarm the alarm to set
+	 */
+	public void setAlarm(Date alarm) {
+		this.alarm = alarm;
+	}
+
+    
 }
