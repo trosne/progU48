@@ -2,7 +2,9 @@ package tdt4140.calendarsystem;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class Appointment {
 
@@ -47,8 +49,27 @@ public class Appointment {
 	public void setStatus(User aUser, String status)
 	{
 		for (int i = 0; i < participants.size(); i++) {
-			if (participants.get(i).getaUser().getUsername() == aUser.getUsername()) {
+			if (participants.get(i).getaUser().getUsername().equals(aUser.getUsername())) {
+				if (participants.get(i).getStatus().equals(Participant.STATUS_DECLINED) && status.equals(Participant.STATUS_DECLINED)) {
+					try {
+						MailHandler mh = new MailHandler();
+						Calendar cal = GregorianCalendar.getInstance();
+						cal.setTime(this.start);
+						String date = cal.get(Calendar.DATE) + "/" + cal.get(Calendar.MONTH) + "/" + cal.get(Calendar.YEAR);
+						mh.setSubject("STATUS CHANGE FOR APPOINTMENT ON " + date);
+						mh.setContent("Someone has declined your meeting on " + date + ":</br></br>"
+								+ "&nbsp;&nbsp;&nbsp;&nbsp;" + aUser.getName());
+						for (Participant participant : participants) {
+							if (!participant.getaUser().isEqual(aUser))
+								mh.setRecipient(participant.getaUser().getEmail());
+						}
+						mh.sendMail();
+					} catch (Exception e) {
+						System.out.println(e.getMessage());
+					}
+				}
 				participants.get(i).setStatus(status);
+				break;
 			}
 		}
 	}

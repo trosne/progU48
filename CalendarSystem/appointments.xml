@@ -3,9 +3,14 @@
         <participant status="Creator" username="kajkaj"/>
         <participant status="Not responded" username="benben"/>
     </appointment>
-    <appointment description="jaja" end_date="1395403597717" start_date="1395399997717">
+    <appointment description="jaja" end_date="1395403597717" location="" start_date="1395399997717">
         <participant status="Creator" username="patrikfb"/>
         <participant status="Not responded" username="lisasteen"/>
         <participant status="Not responded" username="vegbrat"/>
+    </appointment>
+    <appointment description="test" end_date="1395405719110" location="her" start_date="1395403259110">
+        <participant status="Creator" username="patrikfb"/>
+        <participant status="Not responded" username="vegbrat"/>
+        <participant status="Not responded" username="benben"/>
     </appointment>
 </appointments>
