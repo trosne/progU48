@@ -348,7 +348,7 @@ public class ArrDialog{
 	    			JList target = (JList)e.getSource();
 	    			DefaultListModel model = (DefaultListModel)target.getModel();
 	    			int index = target.getSelectedIndex();
-                    if (index != -1)
+                    if (index > 0)
                         model.remove(index);
 	    		}
 	    	}
@@ -506,6 +506,7 @@ public class ArrDialog{
 			public void actionPerformed(ActionEvent e) {
                 if (btnBookARoom.getText().equals("Book a room"))
                 {
+                    updateDateFromFields();
                     EventQueue.invokeLater(new Runnable() {
                         public void run() {
                             try {
