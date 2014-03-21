@@ -29,8 +29,9 @@ public class AppointmentStatusPanel extends JPanel {
 
     public AppointmentStatusPanel(JPanel contentPanel, Appointment appointment)
     {
+        if (appointment != mAppointment)
+            statusEntries = new ArrayList<>();
         mAppointment = appointment;
-        statusEntries = new ArrayList<>();
 
         final int STATUS_LEFT_POS = 340;
         //Create and place separate content panel for JLists to add participants
@@ -105,11 +106,10 @@ public class AppointmentStatusPanel extends JPanel {
         statusEntries.add(newEntry);
     }
 
-    public void finalize()
+    public void apply()
     {
         for (int i = 0; i < statusEntries.size(); i++)
             mAppointment.setStatus(statusEntries.get(i).user, statusEntries.get(i).status);
-        statusEntries.clear();
     }
 
     private boolean hasEntry(User u)
@@ -155,7 +155,24 @@ public class AppointmentStatusPanel extends JPanel {
             rbDecline.setSelected(false);
             rbNoAnswer.setSelected(false);
 
-            if (mAppointment.getParticipant(user) != null)
+            if (hasEntry(user))
+            {
+                switch (getStatus(user))
+                {
+                    case Participant.STATUS_ATTENDING:
+                        rbAccept.setSelected(true);
+                        break;
+                    case Participant.STATUS_DECLINED:
+                        rbDecline.setSelected(true);
+                        break;
+                    case Participant.STATUS_NOT_RESPONDED:
+                        rbNoAnswer.setSelected(true);
+                        break;
+
+                }
+                
+            }
+            else if (mAppointment.getParticipant(mUser) != null)
             {
                 switch (mAppointment.getParticipant(user).getStatus())
                 {
@@ -171,21 +188,9 @@ public class AppointmentStatusPanel extends JPanel {
 
                 }
             }
-            else if (hasEntry(user))
+            else
             {
-                switch (getStatus(user))
-                {
-                    case Participant.STATUS_ATTENDING:
-                        rbAccept.setSelected(true);
-                        break;
-                    case Participant.STATUS_DECLINED:
-                        rbDecline.setSelected(true);
-                        break;
-                    case Participant.STATUS_NOT_RESPONDED:
-                        rbNoAnswer.setSelected(true);
-                        break;
-
-                }
+                rbNoAnswer.setSelected(true);
             }
 
 
