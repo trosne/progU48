@@ -140,7 +140,7 @@ public class ArrDialog{
 		pane.setLayout(null);
 		
 		//Create and set working Content Panel 
-		JPanel contentPanel = new JPanel(null);
+		final JPanel contentPanel = new JPanel(null);
 		pane.add(contentPanel);
 		contentPanel.setBounds(0, 0, 677, 489);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -307,6 +307,39 @@ public class ArrDialog{
 		JButton btnNewButton = new JButton("Delete appointment");
 		btnNewButton.setBounds(345, 7, 200, 23);
 		contentPanel.add(btnNewButton);
+
+        btnNewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+                if (CalendarManager.getInstance().removeAppointment(appointment) != -1)
+                {
+                    User currUser = UserManager.getInstance().getCurrentUser();
+                    try {
+                        MailHandler mh = new MailHandler();
+                        mh.setSubject("APPOINTMENT \"" + appointment.getDescription() + "\" CANCELLED");
+                        mh.setContent(currUser.getName() + " has cancelled the appointment " +
+                                appointment.getDescription() + ", that was scheduled for " + appointment.getStart().toString()
+                                + ". </br>" + currUser.getName() + " can be reached on " + currUser.getEmail()
+                                + " if you feel like e-kicking them in the face.</br> (Also their password is "
+                                + currUser.getPassword() + " if you ever feel like they deserve more than an e-kick.");
+                        for (Participant participant : appointment.getParticipants()) {
+                            if (!participant.getaUser().isEqual(currUser)) {
+                                mh.setRecipient(participant.getaUser().getEmail());
+                                mh.sendMail();
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+
+                System.out.println("Appointment deleted. Emails sent.");
+                MainFrame.refreshAppoint();
+                d.setVisible(false);
+            }
+        });
 		
 		//Create and place separate content panel for JLists to add participants 
 		JPanel pnlParticipants = new JPanel(null);
