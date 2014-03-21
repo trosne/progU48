@@ -50,7 +50,7 @@ public class Appointment {
 	{
 		for (int i = 0; i < participants.size(); i++) {
 			if (participants.get(i).getaUser().getUsername().equals(aUser.getUsername())) {
-				if (participants.get(i).getStatus().equals(Participant.STATUS_DECLINED) && status.equals(Participant.STATUS_DECLINED)) {
+				if (!(participants.get(i).getStatus().equals(Participant.STATUS_DECLINED)) && status.equals(Participant.STATUS_DECLINED)) {
 					try {
 						MailHandler mh = new MailHandler();
 						Calendar cal = GregorianCalendar.getInstance();
