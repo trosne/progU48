@@ -224,9 +224,19 @@ public class CalendarPanel extends JPanel {
 						&& (currentYear == realYear)) { // Today
 					setBackground(new Color(220, 220, 255));
 				}
+				
+				for(String s : MainFrame.rowsExist()) {
+					
+					if ( (Integer.parseInt(value.toString())) == (Integer.parseInt(s.toString())))
+						setBackground(new Color(233, 32, 32));
+					
+				}
+				
+				
 			}
 			if (selected)
 				setBackground(new Color(255, 228, 181));
+
 
 			setBorder(null);
 			setForeground(Color.black);

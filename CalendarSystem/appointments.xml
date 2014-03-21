@@ -1,7 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?><appointments>
-    <appointment description="hurra for alt-fest" end_date="1395407733462" location="tits" start_date="1395404133462">
-        <participant status="Creator" username="kajkaj"/>
-        <participant status="Attending" username="benben"/>
-        <extparticipant extparticipant=""/>
-    </appointment>
-</appointments>
+<?xml version="1.0" encoding="UTF-8"?><appointments>    <appointment description="hurra for alt-fest" end_date="1395407733462" location="tits" start_date="1395404133462">        <participant status="Creator" username="kajkaj"/>        <participant status="Attending" username="benben"/>        <extparticipant extparticipant=""/>    </appointment>    <appointment description="bollelunch" end_date="1395409161477" reservation="0" start_date="1395405561477">        <participant status="Creator" username="kajkaj"/>        <participant status="Not responded" username="benben"/>    </appointment></appointments>
