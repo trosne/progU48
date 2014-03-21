@@ -202,6 +202,9 @@ public class CalendarPanel extends JPanel {
 	public String getCurrentDate() {
 		return currentDate;
 	}
+	public int getMonth() {
+		return (currentMonth+1);
+	}
 
 	static class tblCalendarRenderer extends DefaultTableCellRenderer {
 
@@ -211,7 +214,7 @@ public class CalendarPanel extends JPanel {
 
 			super.getTableCellRendererComponent(table, value, selected,
 					focused, row, column);
-
+			
 			if ((column == 5) || (column == 6)) { // Week-end
 				setBackground(new Color(255, 220, 220));
 			} else { // Week
@@ -219,6 +222,8 @@ public class CalendarPanel extends JPanel {
 			}
 
 			if (value != null) {
+				
+				
 				if ((Integer.parseInt(value.toString()) == realDay)
 						&& (currentMonth == realMonth)
 						&& (currentYear == realYear)) { // Today
@@ -227,10 +232,15 @@ public class CalendarPanel extends JPanel {
 				
 				for(String s : MainFrame.rowsExist()) {
 					
-					if ( (Integer.parseInt(value.toString())) == (Integer.parseInt(s.toString())))
+					if ( (Integer.parseInt(value.toString())) == (Integer.parseInt(s.toString()))){
 						setBackground(new Color(233, 32, 32));
+					}
+				
+						
 					
 				}
+				
+				
 				
 				
 			}
@@ -265,6 +275,7 @@ public class CalendarPanel extends JPanel {
 			} else { // Forward one month
 				currentMonth += 1;
 			}
+			tblCalendar.changeSelection(0, 6, false, false);
 			refreshCalendar(currentMonth, currentYear);
 		}
 	}

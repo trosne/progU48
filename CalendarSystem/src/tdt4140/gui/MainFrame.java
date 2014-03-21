@@ -191,7 +191,6 @@ public class MainFrame extends JFrame {
         
         //Set MainFrame visible
         refreshAppoint();
-       // mtblArrange.ad
         setVisible(true);
 
         //on exit action:
@@ -215,6 +214,7 @@ public class MainFrame extends JFrame {
 		String date = calendarPanel.getCurrentDate();
 		Calendar currCal = GregorianCalendar.getInstance();
 		String[] dateStrings = date.split("/");
+		dateStrings[1] = Integer.toString(calendarPanel.getMonth());
 		currCal.set(Integer.parseInt(dateStrings[2]), Integer.parseInt(dateStrings[1]), Integer.parseInt(dateStrings[0]));
 
 		for (Appointment appointment : _calendarManager.getAppointments()) {
