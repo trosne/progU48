@@ -160,7 +160,6 @@ public class MainFrame extends JFrame {
         
         mtblArrange.setColumnCount(7);
        // mtblArrange.setRowCount(6);
-        //mtblArrange.setr
         tblArrange.addMouseListener(new MouseAdapter() {
 
             public void mousePressed(MouseEvent e) {

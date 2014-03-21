@@ -235,14 +235,9 @@ public class CalendarPanel extends JPanel {
 					if ( (Integer.parseInt(value.toString())) == (Integer.parseInt(s.toString()))){
 						setBackground(new Color(233, 32, 32));
 					}
-				
-						
-					
+		
 				}
-				
-				
-				
-				
+					
 			}
 			if (selected)
 				setBackground(new Color(255, 228, 181));
@@ -275,7 +270,6 @@ public class CalendarPanel extends JPanel {
 			} else { // Forward one month
 				currentMonth += 1;
 			}
-			tblCalendar.changeSelection(0, 6, false, false);
 			refreshCalendar(currentMonth, currentYear);
 		}
 	}
