@@ -37,7 +37,7 @@ public class BookRoom {
 
 		bookDialog = new JDialog(dialog, dialogName, modal);
 		bookDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		bookDialog.setBounds(1200, 100, 300, 160);
+		bookDialog.setBounds(600, 100, 300, 160);
 
         cmbxRoom = new JComboBox();
 		pane = bookDialog.getContentPane();

@@ -65,11 +65,11 @@ public class ArrDialog{
 
     private int formatterGetHour(String value)
     {
-        return Integer.decode(value.substring(0, 2));
+        return Integer.decode(value.substring(0, value.indexOf(":")));
     }
     private int formatterGetMin(String value)
     {
-        return Integer.decode(value.substring(3));
+        return Integer.decode(value.substring(value.indexOf(":") + 1));
     }
 
     private String formatterToString(int hour, int min)
@@ -364,7 +364,7 @@ public class ArrDialog{
 		pnlParticipants.add(lblExtParticipants);
 		
 		//Create JList lstFrom (JList populated from model - populated on top) - source data for user groups and users 
-		JList lstFrom = new JList(mFromLst);
+		final JList lstFrom = new JList(mFromLst);
 		lstFrom.setBounds(10, 21, 292, 83);
 		lstFrom.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		lstFrom.setPrototypeCellValue("Group name ##");
@@ -374,12 +374,13 @@ public class ArrDialog{
 			
 		 	public void mousePressed( MouseEvent e){
 	    		if (e.getClickCount()==2){
-	    			
-	    		
 	    			JList target = (JList)e.getSource();
 	    			int index = target.getSelectedIndex();
                     if (!mToLst.contains(mFromLst.get(index)))
-    	    			mToLst.addElement(target.getModel().getElementAt(index));
+                    {
+    	    			mToLst.addElement(mFromLst.get(index));
+                        mFromLst.removeElementAt(index);
+                    }
 	    		}
 	    	}
 		});
@@ -390,7 +391,7 @@ public class ArrDialog{
 		pnlParticipants.add(sp);
 		
 		//Create  JList lstTo, populated manually with values from the JList above - used to save info about participants
-		JList lstTo = new JList(mToLst);
+		final JList lstTo = new JList(mToLst);
 		lstTo.setBounds(10, 118, 292, 80);
 		lstTo.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		lstTo.setPrototypeCellValue("Group name ##");
@@ -404,13 +405,17 @@ public class ArrDialog{
                 int index = target.getSelectedIndex();
 	    		switch (e.getClickCount()){
                     case 2:
-                        if (index > 0)
+                        if (index >= 0 && !appointment.getCreator()
+                                .getName().equals((String) mFromLst.get(index)))
                         {
-                            model.remove(index);
+                            mFromLst.addElement(mToLst.get(index));
+                            mToLst.removeElementAt(index);
                             pnlStatus.setUser(null);
                         }
                     break;
                     case 1:
+                        if (index < 0)
+                            break;
                         String elem = (String) mToLst.get(index);
                         if (!elem.contains("(Group)"))
                         {
@@ -544,14 +549,12 @@ public class ArrDialog{
 
                 appointment.setExtParticipants(extPart);
 
-                if (!isChange)
-                {
-                    //TODO: Patrik: ny avtale, send mail til alle extparticipants
-                }
-                else
-                    pnlStatus.finalize();
+                //flush participant list and put creator first in the list:
+                User creator = appointment.getParticipants().get(0).getaUser();
+                appointment.getParticipants().clear();
+                appointment.addParticipant(creator);
 
-
+                //add participants:
                 for (int i = 0; i < mToLst.size(); i++)
                 {
                     String elem = (String) mToLst.get(i);
@@ -562,7 +565,7 @@ public class ArrDialog{
                         {
                             ArrayList<User> usersInGroup = g.getAllUsers();
                             for (int j = 0; j < usersInGroup.size(); j++)
-                                appointment.addParticipant(usersInGroup.get(i));
+                                appointment.addParticipant(usersInGroup.get(j));
                         }
                     }
                     else
@@ -574,6 +577,9 @@ public class ArrDialog{
                             appointment.addParticipant(u);
                     }
                 }
+
+                //apply statuses:
+                pnlStatus.apply();
 
                 if (!isChange)
                     CalendarManager.getInstance().makeAppointment(appointment);
@@ -594,6 +600,8 @@ public class ArrDialog{
 						System.out.println(ex.getMessage());
 					}
                 }
+
+
                 
                 if (!appointment.getExtParticipants().isEmpty()) {
                 	try {

@@ -74,6 +74,15 @@ public class Appointment {
 			}
 		}
 	}
+
+    public User getCreator()
+    {
+        for (Participant p : participants)
+            if (p.getStatus().equals(Participant.STATUS_CREATOR))
+                return p.getaUser();
+
+        return null;
+    }
 	
 	/**
 	 * Adds a participant to the calendar appointment
