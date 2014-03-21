@@ -107,7 +107,7 @@ public class CalendarPanel extends JPanel {
 		realYear = cal.get(GregorianCalendar.YEAR); // Get year
 		currentMonth = realMonth; // Match month and year
 		currentYear = realYear;
-		currentDate = cal.get(GregorianCalendar.DATE) + "/" + currentMonth + "/"
+		currentDate = cal.get(GregorianCalendar.DATE) + "/" + (currentMonth+1) + "/"
 				+ currentYear;
 	}
 
