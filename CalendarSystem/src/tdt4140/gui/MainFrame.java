@@ -207,8 +207,38 @@ public class MainFrame extends JFrame {
         
         
 	}
+
+	public static List<String> rowsExist() {
+		List<String> where = new ArrayList<String>();
+		
+		
+		String date = calendarPanel.getCurrentDate();
+		Calendar currCal = GregorianCalendar.getInstance();
+		String[] dateStrings = date.split("/");
+		currCal.set(Integer.parseInt(dateStrings[2]), Integer.parseInt(dateStrings[1]), Integer.parseInt(dateStrings[0]));
+
+		for (Appointment appointment : _calendarManager.getAppointments()) {
+			Calendar appCalS = new GregorianCalendar();
+			Calendar appCalE = new GregorianCalendar();
+			appCalS.setTime(appointment.getStart());
+			
+			if (appCalS.get(Calendar.YEAR) == currCal.get(Calendar.YEAR) && appCalS.get(Calendar.MONTH)+1 == 
+					currCal.get(Calendar.MONTH)) {
+				where.add( Integer.toString(appointment.getStart().getDate())) ;
+				
+			}
+			
+		}
+		
+		return where;
+			
+			
+	}
+
+
 	
 	public static void refreshAppoint(){
+		
 		for (int i = 0; i < mtblArrange.getRowCount(); i++) {
 	        for (int j = 0; j < mtblArrange.getColumnCount(); j++) {
 	        	mtblArrange.setValueAt(null, i, j);
