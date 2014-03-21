@@ -335,6 +335,8 @@ public class ArrDialog{
                     }
                 }
 
+                RoomManager.getInstance().removeReservation(appointment.getRes());
+
                 System.out.println("Appointment deleted. Emails sent.");
                 MainFrame.refreshAppoint();
                 d.setVisible(false);
